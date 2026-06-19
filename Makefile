@@ -79,6 +79,7 @@ dist:
 	@rm -f "$(DIST)/agent-outputs/"* 2>/dev/null || true
 	@printf 'The Stock Analyzer writes everything it produces here — reports,\nworkbooks, and the per-ticker data cache. Empty until you run the agent.\n' > "$(DIST)/agent-outputs/README.txt"
 	@touch "$(DIST)/agent-outputs/.gitkeep"
+	@rm -rf "$(DIST)/out"
 	@find "$(DIST)" -name '.DS_Store' -delete
 	@find "$(DIST)" -name '__pycache__' -type d -prune -exec rm -rf {} +
 	@find "$(DIST)" -name '*.pyc' -delete

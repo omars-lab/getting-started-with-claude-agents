@@ -30,7 +30,7 @@ Refactor the existing sector/thematic primer agent into a **single-stock-analyze
       scripts/check.py
       requirements.txt             # canonical Python deps (owned by this skill)
     ticker-discovery/SKILL.md      # find candidates today
-    ticker-data/SKILL.md           # pull filings/quotes/news into ./out/<TICKER>/raw/
+    ticker-data/SKILL.md           # pull filings/quotes/news into ./agent-outputs/<TICKER>/raw/
     stock-analysis/SKILL.md        # qualitative read for one ticker
     growth-study/SKILL.md          # MoM/QoQ/YoY trajectory + xlsx output
     xlsx-author/SKILL.md           # shared workbook discipline (consumed by growth-study)
@@ -58,7 +58,7 @@ README.md                          # teaches agent vs. skill, walks the example
 | `sector-overview`      | merge       | `stock-analysis`       | Sector/macro context becomes one section inside per-ticker analysis. |
 | `comps-analysis`       | repurpose   | `growth-study` + `xlsx-author` | Workbook discipline split into a shared skill; growth-study points at MoM/YoY revenue trajectory. |
 | `pptx-author`          | drop        | —                      | Output is HTML, not slides. |
-| (new)                  | add         | `ticker-data`          | Source-of-truth fetcher; idempotent cache at `./out/<TICKER>/raw/`. |
+| (new)                  | add         | `ticker-data`          | Source-of-truth fetcher; idempotent cache at `./agent-outputs/<TICKER>/raw/`. |
 | (new)                  | add         | `xlsx-author`          | Shared formulas-not-hardcodes discipline. Recalc verification. |
 | (new)                  | add         | `thesis-stress-test`   | Validates the read so the agent doesn't ship a news summary as analysis. |
 | (new)                  | add         | `explain-agent`        | Self-explanation as a skill — interactive HTML diagram on localhost. |
@@ -87,7 +87,7 @@ Pulled out from `growth-study` so multiple skills (and future ones, like a peer-
 - Color semantics: blue text = inputs, black = formulas, green = cross-sheet refs, red = external refs. Yellow background `#FFF2CC` = key assumptions the user can override.
 - Headers: navy `#1F4E79` (section), light blue `#D9E1F2` (column), light gray `#F2F2F2` (stats rows).
 - Numbers: percentages 1 decimal, multiples `Nx`, dollars no decimals + thousands separator, years stored as text.
-- **Mandatory recalc verification.** openpyxl writes formula *strings* but doesn't evaluate them. After saving, run `./.venv/bin/python3 .claude/skills/xlsx-author/scripts/recalc.py ./out/<TICKER>.xlsx` — pure-Python evaluation via the `formulas` package — to scan for `#REF!`/`#DIV/0!`/etc. errors.
+- **Mandatory recalc verification.** openpyxl writes formula *strings* but doesn't evaluate them. After saving, run `./.venv/bin/python3 .claude/skills/xlsx-author/scripts/recalc.py ./agent-outputs/<TICKER>.xlsx` — pure-Python evaluation via the `formulas` package — to scan for `#REF!`/`#DIV/0!`/etc. errors.
 
 Drawn from Anthropic's official xlsx skill (github.com/anthropics/skills/skills/xlsx) so users transferring between projects find the same conventions.
 
@@ -106,7 +106,7 @@ Without this, the agent stops at "here's the read" — which is a news summary, 
 The agent explains itself as part of the deliverable. `./.venv/bin/python3 .claude/skills/explain-agent/scripts/serve.py`:
 
 1. Walks `.claude/agents/` and `.claude/skills/*/SKILL.md` to build the event/skill graph dynamically.
-2. Writes `./out/agent-diagram.json` (regenerable source of truth) and `./out/agent-diagram.html` (self-contained, offline-capable).
+2. Writes `./agent-outputs/agent-diagram.json` (regenerable source of truth) and `./agent-outputs/agent-diagram.html` (self-contained, offline-capable).
 3. Serves on localhost (port 8765 or next free) and opens the browser.
 
 Visual style borrows the warm earthy palette + stacked horizontal timeline aesthetic of `code.claude.com/docs/en/context-window`. The diagram updates automatically as skills are added or removed because the event list is generated, not hardcoded.
@@ -115,28 +115,28 @@ Visual style borrows the warm earthy palette + stacked horizontal timeline aesth
 
 - **Input:** any of `analyze the market today`, a sector hint, or a list of tickers. If no input, default to a daily sweep.
 - **Workflow:**
-  0. `ensure-deps` → readiness check (venv, packages, LibreOffice, ./out/). Stop if not ready.
+  0. `ensure-deps` → readiness check (venv, packages, LibreOffice, ./agent-outputs/). Stop if not ready.
   1. `ticker-discovery` → shortlist of 3–7 names with one-line reasons. **Stop, confirm with user.**
   2. For each approved ticker (parallel): `ticker-data` → cache.
   3. For each ticker (parallel): `stock-analysis` (qualitative) and `growth-study` (workbook, runs `recalc.py` before finishing).
   4. For each ticker (sequential after stock-analysis): `thesis-stress-test`.
-  5. Assemble HTML report at `./out/report-YYYY-MM-DD.html` linking to `./out/<TICKER>.xlsx`.
+  5. Assemble HTML report at `./agent-outputs/report-YYYY-MM-DD.html` linking to `./agent-outputs/<TICKER>.xlsx`.
 - **Stop points:** after discovery (confirm shortlist), after the report draft.
 
 ## Deliverable spec
 
-- **`./out/report-YYYY-MM-DD.html`** — top section: market context + shortlist. Per-ticker section: thesis hook, recent news, growth snapshot, stress-test verdict, link to `.xlsx`.
-- **`./out/<TICKER>.xlsx`** — three tabs (Fundamentals, News, Historical), built per `xlsx-author` conventions, recalc-verified.
-- **`./out/<TICKER>/raw/`** — `manifest.json`, `filings/`, `quote.json`, `prices/daily-2y.csv`, `news.json`, `peers.json`. Idempotent with staleness windows.
-- **`./out/agent-diagram.html`** + **`./out/agent-diagram.json`** — generated by `explain-agent` on demand.
+- **`./agent-outputs/report-YYYY-MM-DD.html`** — top section: market context + shortlist. Per-ticker section: thesis hook, recent news, growth snapshot, stress-test verdict, link to `.xlsx`.
+- **`./agent-outputs/<TICKER>.xlsx`** — three tabs (Fundamentals, News, Historical), built per `xlsx-author` conventions, recalc-verified.
+- **`./agent-outputs/<TICKER>/raw/`** — `manifest.json`, `filings/`, `quote.json`, `prices/daily-2y.csv`, `news.json`, `peers.json`. Idempotent with staleness windows.
+- **`./agent-outputs/agent-diagram.html`** + **`./agent-outputs/agent-diagram.json`** — generated by `explain-agent` on demand.
 
 ## Project settings (`.claude/settings.json`)
 
 Allowlist common read-only / safe operations so the agent runs without permission churn:
 
-- Bash: `python3 *`, `pip install *`, `uv run *`, `mkdir *`, `open ./out/*`
+- Bash: `python3 *`, `pip install *`, `uv run *`, `mkdir *`, `open ./agent-outputs/*`
 - WebFetch: yahoo finance, stockanalysis.com, sec.gov, efts.sec.gov, finnhub.io, alphavantage.co
-- Read/Edit/Write: scoped to `./out/**`
+- Read/Edit/Write: scoped to `./agent-outputs/**`
 
 Deny: reads/edits to `.env`, `rm -rf *`, raw `curl`/`wget` (force WebFetch).
 
