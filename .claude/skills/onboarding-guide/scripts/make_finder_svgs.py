@@ -189,6 +189,30 @@ rows_launch = [row(i, *v) for i, v in enumerate(launch)]
     window(rows_launch, "market-researcher")
 )
 
-for f in ["finder-hidden.svg", "finder-shown.svg", "finder-claude.svg", "finder-launch.svg"]:
+# --- inside .claude/agents/ (Make it yours: the role file) ---
+agents = [
+    ("stock-analyzer.md", "file", False, "the role — read this first", True),
+]
+rows_agents = [row(i, *v) for i, v in enumerate(agents)]
+(ASSETS / "finder-agents.svg").write_text(
+    window(rows_agents, "agents")
+)
+
+# --- inside .claude/skills/ (Make it yours: copy a SKILL.md) ---
+skills = [
+    ("ensure-deps", "folder", False, None, False),
+    ("growth-study", "folder", False, None, False),
+    ("stock-analysis", "folder", False, None, False),
+    ("thesis-stress-test", "folder", False, "the most opinionated", False),
+    ("ticker-data", "folder", False, None, False),
+    ("xlsx-author", "folder", False, "← copy this one", True),
+]
+rows_skills = [row(i, *v) for i, v in enumerate(skills)]
+(ASSETS / "finder-skills.svg").write_text(
+    window(rows_skills, "skills")
+)
+
+for f in ["finder-hidden.svg", "finder-shown.svg", "finder-claude.svg",
+          "finder-launch.svg", "finder-agents.svg", "finder-skills.svg"]:
     p = ASSETS / f
     print(f"wrote {p}  ({p.stat().st_size // 1024} KB)")

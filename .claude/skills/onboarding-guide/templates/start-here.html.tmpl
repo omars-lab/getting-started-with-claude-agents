@@ -499,8 +499,9 @@
     <aside class="note"><b>convention</b>where files go in and come out</aside>
     <div>
       <h2>Giving it files, getting files back</h2>
-      <p>To keep things obvious, the folder uses two plainly-named trays. You don't
-        need to remember internal paths — just drop and collect.</p>
+      <p>To keep things obvious, the agent has been configured to use two
+        plainly-named folders — one for what you give it, one for what it produces.
+        You don't need to remember internal paths; just drop and collect.</p>
       <div class="io">
         <div class="box in">
           <span class="tag">You give it →</span>
@@ -534,9 +535,22 @@
       <ol class="steps">
         <li><h3>Read three files</h3><p>The agent (<code>stock-analyzer.md</code>),
           the cleanest skill (<code>xlsx-author</code>), and the most opinionated one
-          (<code>thesis-stress-test</code>). That's the whole pattern.</p></li>
+          (<code>thesis-stress-test</code>). That's the whole pattern.</p>
+          <figure style="margin:12px 0 4px">
+            <img class="shot" alt="Finder window inside .claude/agents showing the single file stock-analyzer.md, labeled 'the role — read this first'." src="__FINDER_AGENTS__">
+            <figcaption><b><code>.claude/agents/</code></b> — one file, the role. Open it
+              in any text editor; it's plain Markdown.</figcaption>
+          </figure>
+        </li>
         <li><h3>Add a skill</h3><p>Copy any <code>SKILL.md</code>, change the recipe,
-          point the agent at it. No framework, no registry — just Markdown.</p></li>
+          point the agent at it. No framework, no registry — just Markdown.</p>
+          <figure style="margin:12px 0 4px">
+            <img class="shot" alt="Finder window inside .claude/skills showing skill folders like xlsx-author (labeled 'copy this one') and thesis-stress-test." src="__FINDER_SKILLS__">
+            <figcaption><b><code>.claude/skills/</code></b> — one folder per skill. Duplicate
+              <code>xlsx-author/</code>, rename it, rewrite its <code>SKILL.md</code>, and
+              the agent can call it.</figcaption>
+          </figure>
+        </li>
         <li><h3>Tighten a rule</h3><p>Edit a skill's <em>Standards</em> section, or the
           <code>deny</code> list in <code>settings.json</code>. The agent picks it up next run.</p></li>
       </ol>

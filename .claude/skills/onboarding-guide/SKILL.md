@@ -18,6 +18,8 @@ After running, these exist:
   - `finder-shown.svg` — after `⌘⇧.` reveals the dotfiles
   - `finder-claude.svg` — the contents of `.claude` (agents, skills, plans, settings.json)
   - `finder-launch.svg` — the folder with `Open in Claude.command` highlighted (Getting Started step 1)
+  - `finder-agents.svg` — inside `.claude/agents/`, the single `stock-analyzer.md` (Make it yours)
+  - `finder-skills.svg` — inside `.claude/skills/`, the skill folders with `xlsx-author` highlighted (Make it yours)
   - `claude-agents.svg` — the `/agents` Library panel proving `stock-analyzer` is a configured Project agent
   - `claude-splash.svg` — the Claude Code startup splash (mascot + version + empty input box, "waiting for input")
 - **`./View Guide.command`** — double-click launcher that opens `start-here.html` in the browser (create if missing).

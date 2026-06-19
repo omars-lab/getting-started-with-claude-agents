@@ -1,8 +1,9 @@
 # Makefile for getting-started-with-claude-agents
 #
 #   make zip   → build a timestamped zip of this folder for sharing,
-#                omitting .venv, .git, the Makefile, and macOS cruft.
-#                Keeps .claude (the agent + skills).
+#                omitting repo tooling (.venv, .git, Makefile, .gitignore,
+#                .pre-commit-config.yaml, index.html) and macOS cruft.
+#                Keeps .claude (the agent + skills) and start-here.html.
 
 # Folder name → archive base name (e.g. getting-started-with-claude-agents)
 NAME := $(notdir $(CURDIR))
@@ -26,6 +27,9 @@ zip:
 		-x '*/.git/*' '.git/*' \
 		-x 'Makefile' \
 		-x '*.zip' \
+		-x '.gitignore' \
+		-x '.pre-commit-config.yaml' \
+		-x 'index.html' \
 		-x '.DS_Store' '*/.DS_Store' \
 		-x '__pycache__/*' '*/__pycache__/*'
 	@echo "Created $(ZIP)"

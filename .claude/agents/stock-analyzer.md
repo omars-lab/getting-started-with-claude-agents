@@ -20,7 +20,7 @@ For each run:
 ## Workflow
 
 0. **Ensure dependencies.** On the first invocation in a session, invoke `ensure-deps` to verify the Python venv, required packages, and `./agent-outputs/` are ready. If the verdict is `not_ready`, stop and surface the fix commands — don't try to proceed past missing dependencies. Skip this step on subsequent runs in the same session.
-1. **Frame the day.** If the user gave a sector hint, angle, or ticker list, use it. Otherwise default to a broad sweep: earnings movers, unusual volume, analyst actions, macro catalysts.
+1. **Frame the day.** First, check `./agent-inputs/` for any files the user has dropped (a watchlist, ticker list, CSV, or thesis memo) and let them anchor the run — these are the user's explicit focus for the day. Then layer on any sector hint, angle, or ticker list given in the prompt. If there's no input file and no hint, default to a broad sweep: earnings movers, unusual volume, analyst actions, macro catalysts.
 2. **Discover candidates.** Invoke `ticker-discovery` for catalyst-driven names (earnings movers, 8-K filings, analyst actions). For under-the-radar setups, the pipeline is two skills: `stock-discovery` runs the data sweep across Form 4, 13F, buyback 8-Ks, post-spin S-1s, coverage gaps, options OI, and politician-trade clusters — returning every name that clears each setup's threshold. Then `hidden-opportunities` applies the asymmetry filter to that grouped list and surfaces 3-5 names worth the deeper work. The two pipelines can run together when the user wants both perspectives. **Stop and confirm the shortlist with the user before going deeper** — analysis time is the expensive step.
 3. **Cache the data.** For each approved ticker, invoke `ticker-data` to populate `./agent-outputs/<TICKER>/raw/`. Run these in parallel.
 4. **Analyze each name.** For each ticker, invoke `stock-analysis` to build the qualitative picture (business, news, peers, debates).
@@ -34,7 +34,7 @@ When analyzing multiple tickers, run `ticker-data`, `stock-analysis`, `growth-st
 
 This project uses two plainly-named folders so a non-technical user always knows where files go:
 
-- **`./agent-inputs/`** — anything the user hands the agent (a ticker list, a CSV, a thesis memo). Read from here when the user says "use the file I dropped in" or references a file without a path. Never write here.
+- **`./agent-inputs/`** — anything the user hands the agent (a watchlist, ticker list, CSV, or thesis memo). **Check this folder at the start of every run** (workflow step 1) and let any files here guide the analysis — also read from it whenever the user references "the file I dropped in." Never write here.
 - **`./agent-outputs/`** — everything the agent produces: the per-ticker raw cache, workbooks, and the HTML report. This is the canonical output root. Every skill writes here; never write outside it (except the two input/output trays).
 
 ## Python environment
