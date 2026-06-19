@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 234" font-family="-apple-system, Helvetica, sans-serif">
+<rect x="0" y="0" width="720" height="234" rx="12" fill="#FFFFFF" stroke="#D4D2CC"/>
+<path d="M0 12 a12 12 0 0 1 12 -12 h696 a12 12 0 0 1 12 12 v40 h-720 z" fill="#ECECEC"/>
+<circle cx="22" cy="20" r="6" fill="#ED6A5E"/>
+<circle cx="42" cy="20" r="6" fill="#F5BF4F"/>
+<circle cx="62" cy="20" r="6" fill="#62C554"/>
+<text x="360" y="25" text-anchor="middle" font-size="13" font-weight="600" fill="#1D1D1F">market-researcher</text>
+<rect x="0" y="52" width="200" height="182" fill="#F5F5F7"/>
+<rect x="0" y="52" width="200" height="182" fill="#F5F5F7"/>
+<text x="20" y="76" font-size="12.5" font-weight="600" fill="#8A8A8E">Favorites</text>
+<text x="20" y="102" font-size="12.5" font-weight="400" fill="#1D1D1F">AirDrop</text>
+<text x="20" y="128" font-size="12.5" font-weight="400" fill="#1D1D1F">Desktop</text>
+<rect x="8" y="139" width="184" height="24" rx="6" fill="#E8DACb"/>
+<text x="20" y="154" font-size="12.5" font-weight="400" fill="#1D1D1F">Downloads</text>
+<text x="20" y="180" font-size="12.5" font-weight="400" fill="#1D1D1F">Documents</text>
+<text x="20" y="206" font-size="12.5" font-weight="600" fill="#8A8A8E">Locations</text>
+<text x="20" y="232" font-size="12.5" font-weight="400" fill="#1D1D1F">Macintosh HD</text>
+<line x1="208" y1="88" x2="704" y2="88" stroke="#E2E0DA"/>
+<text x="224" y="82" font-size="11" font-weight="600" fill="#8A8A8E">Name</text>
+<rect x="208" y="96" width="504" height="30" rx="6" fill="#E8DACb"/><rect x="224" y="100" width="22" height="22" rx="4" fill="#2B2A28"/><text x="229" y="115" font-family="SF Mono, Menlo, monospace" font-size="11" fill="#7CA76E">&gt;_</text><text x="258" y="115" font-family="-apple-system, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#1D1D1F">Open in Claude.command</text><text x="696" y="115" text-anchor="end" font-family="SF Mono, Menlo, monospace" font-size="11" fill="#D97757">← double-click this</text>
+<rect x="208" y="126" width="504" height="30" fill="#FAFAFA"/><rect x="224" y="130" width="22" height="22" rx="4" fill="#2B2A28"/><text x="229" y="145" font-family="SF Mono, Menlo, monospace" font-size="11" fill="#7CA76E">&gt;_</text><text x="258" y="145" font-family="-apple-system, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#1D1D1F">View Guide.command</text>
+<path d="M226 160 h11 l5 5 v15 a2 2 0 0 1 -2 2 h-14 a2 2 0 0 1 -2 -2 v-18 a2 2 0 0 1 2 -2 z" fill="#E9E9EA" stroke="#C7C7CC"/><path d="M237 160 v5 h5" fill="none" stroke="#C7C7CC"/><text x="258" y="175" font-family="-apple-system, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#1D1D1F">README.md</text>
+<rect x="208" y="186" width="504" height="30" fill="#FAFAFA"/><path d="M226 190 h11 l5 5 v15 a2 2 0 0 1 -2 2 h-14 a2 2 0 0 1 -2 -2 v-18 a2 2 0 0 1 2 -2 z" fill="#E9E9EA" stroke="#C7C7CC"/><path d="M237 190 v5 h5" fill="none" stroke="#C7C7CC"/><text x="258" y="205" font-family="-apple-system, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#1D1D1F">start-here.html</text>
+</svg>

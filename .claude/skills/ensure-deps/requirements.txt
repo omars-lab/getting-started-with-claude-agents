@@ -1,0 +1,31 @@
+# Stock-analyzer agent dependencies.
+# Owned by the ensure-deps skill. Install with:
+#   ./.venv/bin/pip install -r .claude/skills/ensure-deps/requirements.txt
+#
+# Skills assume Python is invoked via ./.venv/bin/python3 — never bare
+# python3, which would use the system interpreter and miss these packages.
+
+# --- Workbook authoring (xlsx-author, growth-study) ---
+openpyxl>=3.1
+# Pure-Python Excel formula evaluator. xlsx-author/scripts/recalc.py uses
+# this to verify every workbook before it ships — catches #DIV/0!, #REF!,
+# #NAME? before they reach the user. No system dependencies.
+formulas>=1.3
+
+# --- Market data + filings (ticker-data, growth-study) ---
+yfinance>=0.2.40
+edgartools>=2.0
+pandas>=2.0
+requests>=2.31
+
+# pandas-datareader (FRED macro data) is intentionally omitted: it imports
+# distutils, which is removed in Python 3.12+. Skills that need FRED should
+# fall back to WebFetch from fred.stlouisfed.org instead.
+
+# --- HTML report assembly (stock-analyzer agent) ---
+jinja2>=3.1
+
+# --- Visualization (explain-agent, optional charts in HTML report) ---
+# Plotly is heavy but produces self-contained interactive charts the
+# explain-agent skill embeds in its diagram.
+plotly>=5.20

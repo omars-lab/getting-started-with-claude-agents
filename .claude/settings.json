@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(python3 *)",
+      "Bash(pip install *)",
+      "Bash(pip3 install *)",
+      "Bash(uv run *)",
+      "Bash(uvx *)",
+      "Bash(mkdir *)",
+      "Bash(open ./out/*)",
+      "Bash(open out/*)",
+      "Bash(open ./agent-outputs/*)",
+      "Bash(open agent-outputs/*)",
+      "WebFetch(domain:finance.yahoo.com)",
+      "WebFetch(domain:stockanalysis.com)",
+      "WebFetch(domain:www.sec.gov)",
+      "WebFetch(domain:efts.sec.gov)",
+      "WebFetch(domain:data.sec.gov)",
+      "WebFetch(domain:finnhub.io)",
+      "WebFetch(domain:www.alphavantage.co)",
+      "WebFetch(domain:fred.stlouisfed.org)",
+      "Read(./out/**)",
+      "Edit(./out/**)",
+      "Write(./out/**)",
+      "Read(./agent-inputs/**)",
+      "Read(./agent-outputs/**)",
+      "Edit(./agent-outputs/**)",
+      "Write(./agent-outputs/**)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Edit(.env)",
+      "Edit(.env.*)",
+      "Bash(rm -rf *)",
+      "Bash(curl *)",
+      "Bash(wget *)"
+    ]
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true
+  }
+}

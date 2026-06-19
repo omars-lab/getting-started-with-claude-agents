@@ -1,0 +1,16 @@
+# Python virtual environment — machine-specific, recreate with Setup.command
+.venv/
+
+# Generated agent output — reports, workbooks, per-ticker cache
+agent-outputs/
+
+# Build/share artifacts
+*.zip
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Python
+__pycache__/
+*.pyc

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 300">
+<rect width="860" height="300" rx="10" fill="#FBF4E4"/>
+<text x="24" y="36" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="400" fill="#7CA76E">➜</text>
+<text x="46" y="36" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="400" fill="#5B7FB0">market-researcher</text>
+<text x="232" y="36" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="400" fill="#33312E">claude</text>
+<rect x="37" y="54" width="36" height="9" fill="#C16A4A"/><rect x="28" y="63" width="54" height="18" fill="#C16A4A"/><rect x="28" y="81" width="9" height="9" fill="#C16A4A"/><rect x="46" y="81" width="9" height="9" fill="#C16A4A"/><rect x="64" y="81" width="9" height="9" fill="#C16A4A"/><rect x="73" y="81" width="9" height="9" fill="#C16A4A"/><rect x="37" y="63" width="9" height="9" fill="#FBF4E4"/><rect x="64" y="63" width="9" height="9" fill="#FBF4E4"/>
+<text x="118" y="70" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="700" fill="#33312E">Claude Code</text>
+<text x="232" y="70" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="400" fill="#6B6960">v2.1.183</text>
+<text x="118" y="94" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="400" fill="#6B6960">Opus 4.8 with high effort · Claude Max</text>
+<text x="118" y="118" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="400" fill="#6B6960">~/Downloads/market-researcher</text>
+<line x1="20" y1="176" x2="840" y2="176" stroke="#E3DCC9"/>
+<text x="24" y="210" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="400" fill="#6B6960">›</text>
+<rect x="42" y="196" width="11" height="20" fill="#6B6960"/>
+<line x1="20" y1="234" x2="840" y2="234" stroke="#E3DCC9"/>
+<text x="24" y="260" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" font-weight="400" fill="#5B7FB0">Opus 4.8</text>
+<text x="108" y="260" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" font-weight="400" fill="#6B6960">|</text>
+<rect x="124" y="250" width="17" height="11" fill="#D6B25C"/>
+<rect x="124" y="247" width="8" height="4" fill="#D6B25C"/>
+<text x="148" y="260" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" font-weight="400" fill="#6B6960">market-researcher</text>
+<text x="322" y="260" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" font-weight="400" fill="#6B6960">|</text>
+<text x="340" y="260" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" font-weight="400" fill="#6B6960">▓░░░░░░░░ ~10% of 200k tokens</text>
+<text x="24" y="286" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="400" fill="#C8742E">▶▶ auto mode on</text>
+<text x="186" y="286" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="400" fill="#6B6960">(shift+tab to cycle)  ·  ← for agents</text>
+</svg>

@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How this agent works</title>
+<style>
+  /* ---------- Reset & base ---------- */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: #FAF7F2;
+    color: #2B2A28;
+    font-family: "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 32px 40px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  h1, h2, h3 { font-weight: 600; letter-spacing: -0.01em; margin: 0 0 12px; }
+  h1 { font-size: 22px; }
+  h2 { font-size: 16px; margin-top: 28px; }
+  h3 { font-size: 14px; }
+  p { margin: 0 0 12px; max-width: 70ch; }
+  a { color: #2B2A28; }
+  code { background: #EFEAE0; padding: 1px 5px; border-radius: 3px; }
+
+  /* ---------- Header ---------- */
+  header { margin-bottom: 28px; border-bottom: 1px solid #D8D2C5; padding-bottom: 20px; }
+  header .meta { color: #6B6964; font-size: 12px; margin-top: 6px; }
+  header .agent-desc { margin-top: 12px; color: #2B2A28; }
+
+  /* ---------- Legend ---------- */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin: 18px 0 22px;
+    font-size: 12px;
+  }
+  .legend .item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .swatch {
+    width: 12px; height: 12px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  /* ---------- Timeline ---------- */
+  .axis-label { font-size: 11px; color: #6B6964; margin-bottom: 4px; }
+  .timeline-wrap { overflow-x: auto; padding-bottom: 8px; }
+  .timeline {
+    display: flex;
+    gap: 2px;
+    height: 56px;
+    align-items: stretch;
+    min-width: 100%;
+  }
+  .event {
+    border: 0;
+    cursor: pointer;
+    position: relative;
+    color: #FAF7F2;
+    font-size: 11px;
+    padding: 6px 8px;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    border-radius: 2px;
+    transition: opacity 120ms ease, transform 120ms ease;
+    font-family: inherit;
+  }
+  .event:focus-visible { outline: 2px solid #2B2A28; outline-offset: 2px; }
+  .event .icon { margin-right: 4px; opacity: 0.8; }
+  .event.dim { opacity: 0.25; }
+  .event.active { transform: translateY(-2px); box-shadow: 0 2px 0 #2B2A28; }
+  .event.consumed-marker {
+    flex: 0 0 6px;
+    height: 16px;
+    align-self: flex-end;
+    margin-bottom: 4px;
+    border-radius: 0 0 4px 4px;
+  }
+
+  /* ---------- Tooltip ---------- */
+  .tooltip {
+    position: fixed;
+    background: #2B2A28;
+    color: #FAF7F2;
+    padding: 8px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    line-height: 1.4;
+    pointer-events: none;
+    max-width: 320px;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 80ms ease;
+  }
+  .tooltip.visible { opacity: 1; }
+  .tooltip .kind { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; margin-bottom: 2px; }
+  .tooltip .src { color: #E8A45C; font-size: 11px; margin-top: 4px; }
+
+  /* ---------- Skill panel ---------- */
+  .skill-panel { margin-top: 32px; display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .skill-card {
+    background: #FFFFFF;
+    border: 1px solid #D8D2C5;
+    border-left: 4px solid #D4A843;
+    padding: 14px 16px;
+    border-radius: 3px;
+  }
+  .skill-card.highlight { border-color: #2B2A28; border-left-color: #D97757; }
+  .skill-card h3 { display: flex; justify-content: space-between; align-items: baseline; }
+  .skill-card h3 .name { font-family: inherit; }
+  .skill-card h3 .file { color: #6B6964; font-size: 11px; font-weight: 400; }
+  .skill-card .desc { color: #2B2A28; font-size: 13px; }
+
+  /* ---------- View toggle ---------- */
+  .toggle {
+    position: absolute; top: 32px; right: 40px;
+    display: inline-flex; gap: 0;
+    border: 1px solid #D8D2C5;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .toggle button {
+    background: #FFFFFF; color: #2B2A28;
+    border: 0; padding: 6px 12px;
+    font-family: inherit; font-size: 12px;
+    cursor: pointer;
+  }
+  .toggle button.active { background: #2B2A28; color: #FAF7F2; }
+
+  /* ---------- Flow view ---------- */
+  #flow-view { display: none; margin-top: 24px; }
+  #flow-view.visible { display: block; }
+  .flow-canvas {
+    background: #FFFFFF;
+    border: 1px solid #D8D2C5;
+    padding: 24px;
+    border-radius: 3px;
+    min-height: 480px;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="toggle" role="tablist">
+      <button id="btn-timeline" class="active" role="tab" aria-selected="true">Timeline</button>
+      <button id="btn-flow" role="tab" aria-selected="false">Flow</button>
+    </div>
+    <h1 id="agent-name">Agent</h1>
+    <div class="meta" id="agent-meta"></div>
+    <p class="agent-desc" id="agent-desc"></p>
+  </header>
+
+  <section id="timeline-view">
+    <h2>Run timeline</h2>
+    <p>Each rectangle is one event in a canonical run. Width is proportional to tokens consumed. Click an event to highlight the skill that produced it; click a skill below to highlight every event from that skill.</p>
+
+    <div class="legend" id="legend"></div>
+
+    <div class="axis-label">tokens →</div>
+    <div class="timeline-wrap">
+      <div class="timeline" id="timeline" role="list"></div>
+    </div>
+
+    <h2>Skills</h2>
+    <p>Skills are reusable how-to recipes the agent calls. The agent decides <em>when</em>; the skill carries <em>how</em>.</p>
+    <div class="skill-panel" id="skills"></div>
+  </section>
+
+  <section id="flow-view">
+    <h2>Flow view</h2>
+    <p>Same data as nodes and arrows — useful for seeing topology rather than chronology.</p>
+    <div class="flow-canvas">
+      <svg id="flow-svg" viewBox="0 0 1100 520" width="100%" height="520" role="img" aria-label="Flow diagram of agent skill invocations"></svg>
+    </div>
+  </section>
+
+  <div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
+
+  <script type="application/json" id="data">{{DATA_JSON}}</script>
+  <script>
+    // ---------- Boot ----------
+    const DATA = JSON.parse(document.getElementById("data").textContent);
+    const PALETTE = DATA.palette;
+
+    const KIND_COLOR = {
+      auto: PALETTE.auto,
+      memory: PALETTE.memory,
+      tools: PALETTE.tools,
+      skill: PALETTE.skill,
+      project: PALETTE.project,
+      user: PALETTE.user,
+      claude: PALETTE.claude,
+      tool_result: PALETTE.tool_result,
+      hook: PALETTE.hook,
+      rule: PALETTE.rule,
+    };
+    const KIND_ICON = {
+      auto: "◆", memory: "◉", tools: "▣", skill: "★",
+      project: "◈", user: "▶", claude: "✦", tool_result: "▢",
+      hook: "⚑", rule: "⚐",
+    };
+    const KIND_LABEL = {
+      auto: "Auto / system",
+      memory: "Memory",
+      tools: "Tools / MCP",
+      skill: "Skill",
+      project: "Project context",
+      user: "User input",
+      claude: "Agent action",
+      tool_result: "Tool result",
+      hook: "Hook",
+      rule: "Rules / guardrails",
+    };
+
+    // ---------- Header ----------
+    document.getElementById("agent-name").textContent = DATA.agent;
+    document.getElementById("agent-desc").textContent = DATA.agent_description || "";
+    const generated = new Date(DATA.generated_at).toLocaleString();
+    document.getElementById("agent-meta").textContent =
+      `${DATA.agent_file || ""} · generated ${generated}`;
+
+    // ---------- Legend ----------
+    const usedKinds = new Set(DATA.events.map(e => e.kind));
+    const legend = document.getElementById("legend");
+    [...usedKinds].forEach(k => {
+      const item = document.createElement("span");
+      item.className = "item";
+      item.innerHTML =
+        `<span class="swatch" style="background:${KIND_COLOR[k] || "#999"}"></span>` +
+        `<span aria-hidden="true">${KIND_ICON[k] || "·"}</span>` +
+        `<span>${KIND_LABEL[k] || k}</span>`;
+      legend.appendChild(item);
+    });
+
+    // ---------- Timeline ----------
+    const timeline = document.getElementById("timeline");
+    const totalTokens = DATA.events.reduce((sum, e) => sum + (e.tokens || 200), 0);
+
+    DATA.events.forEach((e, i) => {
+      if (e.consumed_by) {
+        // Render as a small bracket under the consuming bar (simplified: thin marker).
+        const marker = document.createElement("div");
+        marker.className = "event consumed-marker";
+        marker.style.background = KIND_COLOR[e.kind] || "#999";
+        marker.title = `${e.label} — consumed by ${e.consumed_by}`;
+        marker.dataset.index = i;
+        timeline.appendChild(marker);
+        return;
+      }
+      const btn = document.createElement("button");
+      btn.className = "event";
+      btn.dataset.index = i;
+      if (e.skill) btn.dataset.skill = e.skill;
+      btn.dataset.kind = e.kind;
+      const tokens = e.tokens || 200;
+      const widthPct = Math.max(1.5, (tokens / totalTokens) * 100);
+      btn.style.flex = `${widthPct} 0 0`;
+      btn.style.background = KIND_COLOR[e.kind] || "#999";
+      btn.innerHTML =
+        `<span class="icon" aria-hidden="true">${KIND_ICON[e.kind] || "·"}</span>` +
+        `<span>${e.label}</span>`;
+      btn.setAttribute("role", "listitem");
+      btn.setAttribute("aria-label", `${KIND_LABEL[e.kind] || e.kind}: ${e.label}`);
+      timeline.appendChild(btn);
+    });
+
+    // ---------- Tooltip ----------
+    const tip = document.getElementById("tooltip");
+    function showTip(evt, e) {
+      tip.innerHTML =
+        `<div class="kind">${KIND_LABEL[e.kind] || e.kind}</div>` +
+        `<div>${e.label}</div>` +
+        (e.tokens ? `<div class="src">~${e.tokens} tokens</div>` : "") +
+        (e.source ? `<div class="src">${e.source}</div>` : "") +
+        (e.skill ? `<div class="src">skill: ${e.skill}</div>` : "");
+      tip.classList.add("visible");
+      const x = Math.min(evt.clientX + 12, window.innerWidth - 340);
+      const y = Math.min(evt.clientY + 12, window.innerHeight - 100);
+      tip.style.left = x + "px";
+      tip.style.top = y + "px";
+    }
+    function hideTip() { tip.classList.remove("visible"); }
+
+    timeline.addEventListener("mousemove", evt => {
+      const el = evt.target.closest(".event");
+      if (!el) return hideTip();
+      const i = +el.dataset.index;
+      showTip(evt, DATA.events[i]);
+    });
+    timeline.addEventListener("mouseleave", hideTip);
+
+    // ---------- Skill panel ----------
+    const skillsEl = document.getElementById("skills");
+    DATA.skills.forEach(s => {
+      const card = document.createElement("article");
+      card.className = "skill-card";
+      card.id = `skill-${s.name}`;
+      card.innerHTML =
+        `<h3><span class="name">${s.name}</span><span class="file">${s.file || ""}</span></h3>` +
+        `<div class="desc">${s.description || ""}</div>`;
+      card.addEventListener("click", () => highlightSkill(s.name));
+      skillsEl.appendChild(card);
+    });
+
+    // ---------- Highlighting ----------
+    let activeSkill = null;
+    function highlightSkill(name) {
+      activeSkill = activeSkill === name ? null : name;
+      document.querySelectorAll(".event").forEach(el => {
+        el.classList.remove("active", "dim");
+        if (!activeSkill) return;
+        if (el.dataset.skill === activeSkill) el.classList.add("active");
+        else el.classList.add("dim");
+      });
+      document.querySelectorAll(".skill-card").forEach(c => c.classList.remove("highlight"));
+      if (activeSkill) {
+        const target = document.getElementById(`skill-${activeSkill}`);
+        if (target) {
+          target.classList.add("highlight");
+          target.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }
+    }
+
+    timeline.addEventListener("click", evt => {
+      const el = evt.target.closest(".event");
+      if (!el || !el.dataset.skill) return;
+      highlightSkill(el.dataset.skill);
+    });
+
+    // ---------- View toggle ----------
+    const btnTimeline = document.getElementById("btn-timeline");
+    const btnFlow = document.getElementById("btn-flow");
+    const tlView = document.getElementById("timeline-view");
+    const flowView = document.getElementById("flow-view");
+
+    function setView(which) {
+      const isFlow = which === "flow";
+      btnFlow.classList.toggle("active", isFlow);
+      btnTimeline.classList.toggle("active", !isFlow);
+      btnFlow.setAttribute("aria-selected", isFlow);
+      btnTimeline.setAttribute("aria-selected", !isFlow);
+      flowView.classList.toggle("visible", isFlow);
+      tlView.style.display = isFlow ? "none" : "";
+      if (isFlow) renderFlow();
+    }
+    btnTimeline.addEventListener("click", () => setView("timeline"));
+    btnFlow.addEventListener("click", () => setView("flow"));
+
+    // ---------- Flow view ----------
+    let flowRendered = false;
+    function renderFlow() {
+      if (flowRendered) return;
+      flowRendered = true;
+      const svg = document.getElementById("flow-svg");
+      const NS = "http://www.w3.org/2000/svg";
+      const W = 1100, H = 520;
+      const cx = W / 2, cy = H / 2;
+      // Center: agent. Around: skills.
+      const skills = DATA.skills;
+      const r = 200;
+      // Agent node
+      const agentG = document.createElementNS(NS, "g");
+      const agentCircle = document.createElementNS(NS, "circle");
+      agentCircle.setAttribute("cx", cx);
+      agentCircle.setAttribute("cy", cy);
+      agentCircle.setAttribute("r", 60);
+      agentCircle.setAttribute("fill", PALETTE.claude);
+      agentG.appendChild(agentCircle);
+      const agentText = document.createElementNS(NS, "text");
+      agentText.setAttribute("x", cx);
+      agentText.setAttribute("y", cy + 4);
+      agentText.setAttribute("text-anchor", "middle");
+      agentText.setAttribute("fill", "#FAF7F2");
+      agentText.setAttribute("font-family", "inherit");
+      agentText.setAttribute("font-size", "13");
+      agentText.textContent = DATA.agent;
+      agentG.appendChild(agentText);
+
+      skills.forEach((s, i) => {
+        const angle = (2 * Math.PI * i) / skills.length - Math.PI / 2;
+        const x = cx + r * Math.cos(angle);
+        const y = cy + r * Math.sin(angle);
+        // Edge
+        const line = document.createElementNS(NS, "line");
+        line.setAttribute("x1", cx);
+        line.setAttribute("y1", cy);
+        line.setAttribute("x2", x);
+        line.setAttribute("y2", y);
+        line.setAttribute("stroke", "#D8D2C5");
+        line.setAttribute("stroke-width", "1.5");
+        svg.appendChild(line);
+        // Skill node
+        const c = document.createElementNS(NS, "circle");
+        c.setAttribute("cx", x);
+        c.setAttribute("cy", y);
+        c.setAttribute("r", 36);
+        c.setAttribute("fill", PALETTE.skill);
+        c.style.cursor = "pointer";
+        c.addEventListener("click", () => { setView("timeline"); highlightSkill(s.name); });
+        svg.appendChild(c);
+        const t = document.createElementNS(NS, "text");
+        t.setAttribute("x", x);
+        t.setAttribute("y", y + 4);
+        t.setAttribute("text-anchor", "middle");
+        t.setAttribute("fill", "#2B2A28");
+        t.setAttribute("font-family", "inherit");
+        t.setAttribute("font-size", "11");
+        t.textContent = s.name.length > 14 ? s.name.slice(0, 13) + "…" : s.name;
+        svg.appendChild(t);
+      });
+      svg.appendChild(agentG);
+    }
+  </script>
+</body>
+</html>
