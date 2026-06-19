@@ -41,7 +41,7 @@ shots: build
 	@$(PY) tests/screenshots.py
 
 # Install developer tooling into the venv (guide build + screenshot tests).
-# The agent's own runtime deps install via Setup.command / ensure-deps.
+# The agent's own runtime deps install per the example README (ensure-deps verifies).
 setup:
 	@$(PY) -m pip install -q -r requirements-dev.txt
 	@$(PY) -m playwright install chromium
@@ -53,6 +53,7 @@ build:
 	@$(PY) $(SKILL)/make_finder_svgs.py
 	@$(PY) $(SKILL)/make_agents_svg.py
 	@$(PY) $(SKILL)/make_claude_splash.py
+	@$(PY) $(SKILL)/make_spotlight_svg.py
 	@$(PY) $(SKILL)/build_html.py
 
 # Commit any changes and push. Pushing to main triggers the GitHub Pages

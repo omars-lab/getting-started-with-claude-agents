@@ -52,6 +52,10 @@
     padding:1px 6px;border-radius:4px;color:#6b4a38}
   kbd{font-family:var(--mono);font-size:.82em;background:var(--ink);color:var(--cream);
     padding:3px 8px;border-radius:5px;box-shadow:0 2px 0 #000;font-weight:600}
+  pre.term{background:#2B2A28;color:#E8E4DC;font-family:var(--mono);font-size:14px;
+    line-height:1.7;padding:16px 18px;border-radius:10px;overflow-x:auto;margin:6px 0}
+  pre.term .p{color:#D97757;user-select:none}
+  pre.term .dim{color:#A09E96}
 
   /* ---- hero ----------------------------------------------------------- */
   header.hero{padding:84px 0 56px;border-bottom:1px solid var(--rule)}
@@ -350,11 +354,11 @@
     <aside class="note"><b>look first</b>get into the folder</aside>
     <div>
       <h2>Open the folder</h2>
-      <p>In Finder, this folder (<code>market-researcher</code>) looks ordinary at
-        first — a readme, a couple of launchers, the input/output trays. The
-        interesting part is hidden.</p>
+      <p>In Finder, the unzipped folder (<code>getting-started-with-claude-agents</code>)
+        looks ordinary at first — a readme and the input/output trays. The interesting
+        part is hidden.</p>
       <figure>
-        <img class="shot" alt="Finder window showing the downloaded folder with agent-inputs, agent-outputs, the Open in Claude.command launcher and README. The .claude folder is hidden." src="__FINDER_HIDDEN__">
+        <img class="shot" alt="Finder window showing the downloaded folder with agent-inputs, agent-outputs, and README. The .claude folder is hidden." src="__FINDER_HIDDEN__">
         <figcaption><b>The folder as you first see it.</b> Notice there's no
           <code>.claude</code> yet — macOS hides anything that starts with a dot.
           You'll launch the agent from here in a moment — first, a look at what's inside.</figcaption>
@@ -467,20 +471,28 @@
     <aside class="note"><b>getting started</b>four steps, start to finish</aside>
     <div>
       <h2>Getting started</h2>
-      <p>You've seen what's in the folder. Now run it — four steps.</p>
+      <p>You've seen what's in the folder. Now run it.</p>
 
       <ol class="steps">
         <li>
-          <h3>Open a Claude Code session in this folder</h3>
-          <p>Double-click <code>Open in Claude.command</code> — it launches Claude Code
-            already pointed here. (First time, you may need to right-click → Open so
-            macOS trusts it.) Or open a terminal in this folder and type
-            <code>claude</code>. Either way you land in a session.</p>
+          <h3>Open the Terminal app</h3>
+          <p>Press <kbd>⌘</kbd> <kbd>Space</kbd> to open <b>Spotlight</b>, type
+            <code>terminal</code>, and press <kbd>Return</kbd> to launch the Terminal app.</p>
           <figure style="margin:14px 0 4px">
-            <img class="shot" alt="Finder window with the file 'Open in Claude.command' selected, labeled double-click this." src="__FINDER_LAUNCH__">
-            <figcaption><b>The file to double-click.</b> It's the terminal-badge
-              <code>.command</code> file — it opens a session in this folder for you.</figcaption>
+            <img class="shot" alt="macOS Spotlight search open with 'terminal' typed and Terminal.app as the top result." src="__SPOTLIGHT__">
+            <figcaption><b>⌘ Space, then type “terminal.”</b> Terminal is where you talk to
+              Claude Code.</figcaption>
           </figure>
+        </li>
+        <li>
+          <h3>Point Terminal at this folder and start Claude</h3>
+          <p>Type <code>cd&nbsp;</code> (with a trailing space), then <b>drag the unzipped
+            folder from Finder onto the Terminal window</b> — it fills in the path. Press
+            <kbd>Return</kbd>, then run <code>claude</code>:</p>
+          <pre class="term"><span class="p">$</span> cd <span class="dim">~/Downloads/getting-started-with-claude-agents</span>
+<span class="p">$</span> claude</pre>
+          <p style="font-size:14px;color:var(--ink-soft);margin-top:10px">First time in a
+            new folder, Claude Code asks you to trust it — say yes. Then you're in a session.</p>
         </li>
         <li>
           <h3>Wait for Claude to start</h3>
@@ -635,6 +647,21 @@
         between modes. A skill that knows how to pull filings and build a workbook
         does the same job whether you invoked it by hand or a scheduler did. That's
         the payoff of keeping the <em>who</em> and the <em>how</em> as plain files.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ EGRESS -->
+<section id="egress">
+  <div class="wrap row">
+    <aside class="note"><b>thanks</b>one more thing</aside>
+    <div>
+      <h2>Enjoyed this?</h2>
+      <p>If this walkthrough was useful, I write more about agents, engineering, and
+        building things at my blog:</p>
+      <p style="margin-top:14px">
+        <a class="dlbtn" href="https://blog.bytesofpurpose.com/thoughts" target="_blank" rel="noopener">Read more on Bytes of Purpose →</a>
+      </p>
     </div>
   </div>
 </section>

@@ -5,11 +5,11 @@ launching `claude`, while it waits for your first message. Matches the real UI:
   ➜ git claude
      [mascot]  Claude Code v2.x
                Opus 4.8 with high effort · Claude Max
-               ~/Downloads/market-researcher
+               ~/Downloads/getting-started-with-claude-agents
   ─────────────────────────────────────────────
   › ▍
   ─────────────────────────────────────────────
-  Opus 4.8 | 📁 market-researcher | ~10% of 200k tokens
+  Opus 4.8 | 📁 getting-started-with-claude-agents | ~10% of 200k tokens
 
 Run via:  ./.venv/bin/python3 scripts/make_claude_splash.py
 """
@@ -69,15 +69,15 @@ parts = [
     f'<rect width="{W}" height="{H}" rx="10" fill="{CREAM}"/>',
     # command line
     t(24, 36, "➜", GREEN, 15),
-    t(46, 36, "market-researcher", BLUE, 15),
-    t(232, 36, "claude", INK, 15),
+    t(46, 36, "getting-started-with-claude-agents", BLUE, 15),
+    t(360, 36, "claude", INK, 15),
     # mascot
     mascot(28, 54),
     # splash text block
     t(118, 70, "Claude Code", INK, 15, "700"),
     t(232, 70, "v2.1.183", MUTED, 15),
     t(118, 94, "Opus 4.8 with high effort · Claude Max", MUTED, 15),
-    t(118, 118, "~/Downloads/market-researcher", MUTED, 15),
+    t(118, 118, "~/Downloads/getting-started-with-claude-agents", MUTED, 15),
     # separator + input box
     f'<line x1="20" y1="176" x2="{W-20}" y2="176" stroke="{RULE}"/>',
     t(24, 210, "›", MUTED, 16),
@@ -89,9 +89,9 @@ parts = [
     # folder glyph
     f'<rect x="124" y="250" width="17" height="11" fill="#D6B25C"/>',
     f'<rect x="124" y="247" width="8" height="4" fill="#D6B25C"/>',
-    t(148, 260, "market-researcher", MUTED, 14),
-    t(322, 260, "|", MUTED, 14),
-    t(340, 260, "▓░░░░░░░░ ~10% of 200k tokens", MUTED, 14),
+    t(148, 260, "getting-started-with-claude-agents", MUTED, 14),
+    t(470, 260, "|", MUTED, 14),
+    t(488, 260, "▓░░░░░░░░ ~10%", MUTED, 14),
     # auto mode hint
     t(24, 286, "▶▶ auto mode on", ORANGE, 13),
     t(186, 286, "(shift+tab to cycle)  ·  ← for agents", MUTED, 13),

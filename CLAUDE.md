@@ -33,7 +33,7 @@ If you **add or remove a teaching skill**, also update the guide so it stays acc
 - the skill folders shown in `make_finder_svgs.py`.
 
 The agent's runtime deps live in `example/.claude/skills/ensure-deps/requirements.txt`
-(installed by the shipped `Setup.command`).
+(the README's Setup steps install them; the `ensure-deps` skill verifies them on first run).
 
 ## Editing the guide
 
@@ -54,7 +54,7 @@ Full conventions: `.claude/skills/onboarding-guide/SKILL.md`.
 - `make publish` — build, commit, push (site only).
 - `make setup` — install build/test tooling (Pillow, Playwright + Chromium) from
   `requirements-dev.txt`. The agent's *runtime* deps are separate
-  (`example/.claude/skills/ensure-deps/requirements.txt`, installed by the shipped `Setup.command`).
+  (`example/.claude/skills/ensure-deps/requirements.txt`, installed per the example README's Setup steps).
 - `make shots` — screenshot the guide at desktop (1280) + mobile (390) into
   `tests/screenshots/`. Run `make setup` first.
 - `make clean` — remove `dist/`.

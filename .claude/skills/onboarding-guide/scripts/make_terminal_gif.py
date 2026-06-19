@@ -9,7 +9,7 @@ stock-analyzer agent — matched to how Claude Code actually renders:
   - the subagent block: 'stock-analyzer(Find stocks worth considering today)'
     with indented └ tool calls (Bash / Read / Running… / +1 tool use)
   - an orange '✻ Stewing… (28s · ↓ 636 tokens)' spinner with a '└ Tip:' line
-  - the bottom input box and status line 'Opus 4.8 | 📁 market-researcher | …'
+  - the bottom input box and status line 'Opus 4.8 | 📁 <folder> | …'
 
 Reproducible — no live session needed. Output: assets/terminal.gif
 Run via the project venv:  ./.venv/bin/python3 scripts/make_terminal_gif.py
@@ -132,8 +132,9 @@ def draw_chrome(d):
     d.rectangle([fx, sy + 5, fx + 17, sy + 16], fill=(214, 178, 92))
     d.rectangle([fx, sy + 3, fx + 8, sy + 7], fill=(214, 178, 92))
     x = fx + 23
-    x = draw_segments(d, x, sy, [seg("market-researcher", MUTED), seg("  |  ", MUTED),
-                                 seg("▓░░░░░░░░░ ~10% of 200k tokens", MUTED)])
+    x = draw_segments(d, x, sy, [seg("getting-started-with-claude-agents", MUTED),
+                                 seg("  |  ", MUTED),
+                                 seg("▓░░░░░░░ ~10%", MUTED)])
 
 
 def render(visible, spinner_phase=0, typed=None):

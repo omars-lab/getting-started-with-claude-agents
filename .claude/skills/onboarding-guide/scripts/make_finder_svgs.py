@@ -142,8 +142,7 @@ FOLDER = "getting-started-with-claude-agents"
 visible = [
     ("agent-inputs", "folder", False, "drop files here", False),
     ("agent-outputs", "folder", False, "results land here", False),
-    ("Open in Claude.command", "command", False, "← double-click", True),
-    ("README.md", "file", False, "start here", False),
+    ("README.md", "file", False, "start here", True),
 ]
 rows_hidden = [row(i, *v) for i, v in enumerate(visible)]
 (ASSETS / "finder-hidden.svg").write_text(
@@ -155,7 +154,6 @@ shown = [
     (".claude", "folder", True, "the agent lives here", True),
     ("agent-inputs", "folder", False, "drop files here", False),
     ("agent-outputs", "folder", False, "results land here", False),
-    ("Open in Claude.command", "command", False, "double-click", False),
     ("README.md", "file", False, None, False),
 ]
 rows_shown = [row(i, *v) for i, v in enumerate(shown)]
@@ -173,17 +171,6 @@ inside = [
 rows_inside = [row(i, *v) for i, v in enumerate(inside)]
 (ASSETS / "finder-claude.svg").write_text(
     window(rows_inside, ".claude")
-)
-
-# --- the launcher to double-click (Getting Started, step 1) ---
-launch = [
-    ("Open in Claude.command", "command", False, "← double-click this", True),
-    ("Setup.command", "command", False, "one-time setup", False),
-    ("README.md", "file", False, None, False),
-]
-rows_launch = [row(i, *v) for i, v in enumerate(launch)]
-(ASSETS / "finder-launch.svg").write_text(
-    window(rows_launch, FOLDER)
 )
 
 # --- inside .claude/agents/ (Make it yours: the role file) ---
@@ -210,6 +197,6 @@ rows_skills = [row(i, *v) for i, v in enumerate(skills)]
 )
 
 for f in ["finder-hidden.svg", "finder-shown.svg", "finder-claude.svg",
-          "finder-launch.svg", "finder-agents.svg", "finder-skills.svg"]:
+          "finder-agents.svg", "finder-skills.svg"]:
     p = ASSETS / f
     print(f"wrote {p}  ({p.stat().st_size // 1024} KB)")

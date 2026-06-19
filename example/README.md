@@ -67,26 +67,24 @@ The `xlsx-author` skill is the cleanest example of why splitting matters: it def
 
 You need Claude Code installed. If you don't have it: <https://claude.com/download>.
 
-The easy path: **double-click `Setup.command`** in Finder. It creates the Python venv and installs dependencies for you (safe to run more than once). Then double-click **`Open in Claude.command`** to start.
-
-Or do it by hand in this folder:
+Then, in **Terminal**, from inside this folder:
 
 ```bash
 # 1. Create a project-local Python venv (one-time setup)
 python3 -m venv .venv
 
-# 2. Install dependencies (the list lives in the ensure-deps skill)
+# 2. Install dependencies
 ./.venv/bin/pip install -r .claude/skills/ensure-deps/requirements.txt
 
 # 3. Run Claude
 claude
 ```
 
-Double-clickable launchers, for the non-terminal path:
+Tip: to get into this folder in Terminal, type `cd ` (with a trailing space), drag this
+folder from Finder onto the Terminal window, and press Return.
 
-- **`Setup.command`** — one-time venv + dependency install.
-- **`Open in Claude.command`** — launch Claude Code in this folder.
-- **`Open Outputs.command`** / **`Drop Files Here.command`** — jump to `agent-outputs/` and `agent-inputs/`.
+(The agent's `ensure-deps` skill also checks the environment on its first run and tells
+you exactly what to fix if anything is missing.)
 
 > New here? Read the visual walkthrough first:
 > <https://blog.bytesofpurpose.com/getting-started-with-claude-agents/>
@@ -130,11 +128,7 @@ The skills always invoke Python via `./.venv/bin/python3`, never bare `python3`.
   plans/
     refactor-to-stock-analyzer.md  ← how this repo got here
   settings.json                    ← project permissions
-.venv/                             ← Python venv (Setup.command creates this)
-Setup.command                      ← double-click for one-time venv + deps install
-Open in Claude.command             ← double-click to launch Claude here
-Open Outputs.command               ← double-click to open agent-outputs/
-Drop Files Here.command            ← double-click to open agent-inputs/
+.venv/                             ← Python venv (you create this — see Setup)
 agent-inputs/                      ← drop files for the agent here
 agent-outputs/                     ← the agent writes results here
 README.md                          ← this file

@@ -24,11 +24,11 @@ EMBEDS = {
     "__FINDER_HIDDEN__": ("finder-hidden.svg", "image/svg+xml"),
     "__FINDER_SHOWN__": ("finder-shown.svg", "image/svg+xml"),
     "__FINDER_CLAUDE__": ("finder-claude.svg", "image/svg+xml"),
-    "__FINDER_LAUNCH__": ("finder-launch.svg", "image/svg+xml"),
     "__FINDER_AGENTS__": ("finder-agents.svg", "image/svg+xml"),
     "__FINDER_SKILLS__": ("finder-skills.svg", "image/svg+xml"),
     "__CLAUDE_AGENTS__": ("claude-agents.svg", "image/svg+xml"),
     "__CLAUDE_SPLASH__": ("claude-splash.svg", "image/svg+xml"),
+    "__SPOTLIGHT__": ("spotlight.svg", "image/svg+xml"),
 }
 
 

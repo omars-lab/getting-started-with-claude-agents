@@ -13,11 +13,11 @@ After running, these exist:
 
 - **`./start-here.html`** — the guide, fully self-contained. Every image is inlined as a base64 data URI; it opens offline from anywhere with no external assets, no trackers, no CDN.
 - **`.claude/skills/onboarding-guide/assets/`** — the regenerated source assets:
-  - `terminal.gif` — a *faithful* Claude Code session (cream UI, grey prompt bar, the `● I'll … launch the stock-analyzer agent` turn, the `stock-analyzer(…)` subagent block with indented `└` tool calls, the orange `✻ Stewing…` spinner, the `Opus 4.8 | 📁 market-researcher | …` status line). Claude never says "agent is ready."
+  - `terminal.gif` — a *faithful* Claude Code session (cream UI, grey prompt bar, the `● I'll … launch the stock-analyzer agent` turn, the `stock-analyzer(…)` subagent block with indented `└` tool calls, the orange `✻ Stewing…` spinner, the `Opus 4.8 | 📁 <folder> | …` status line). Claude never says "agent is ready."
   - `finder-hidden.svg` — the folder as first seen, `.claude` hidden
   - `finder-shown.svg` — after `⌘⇧.` reveals the dotfiles
   - `finder-claude.svg` — the contents of `.claude` (agents, skills, plans, settings.json)
-  - `finder-launch.svg` — the folder with `Open in Claude.command` highlighted (Getting Started step 1)
+  - `spotlight.svg` — the macOS Spotlight panel (⌘ Space → "terminal"), Getting Started step 1
   - `finder-agents.svg` — inside `.claude/agents/`, the single `stock-analyzer.md` (Make it yours)
   - `finder-skills.svg` — inside `.claude/skills/`, the skill folders with `xlsx-author` highlighted (Make it yours)
   - `claude-agents.svg` — the `/agents` Library panel proving `stock-analyzer` is a configured Project agent
@@ -33,6 +33,7 @@ Run all three steps from the repo root, using the project venv:
 ./.venv/bin/python3 .claude/skills/onboarding-guide/scripts/make_finder_svgs.py     # → assets/finder-*.svg
 ./.venv/bin/python3 .claude/skills/onboarding-guide/scripts/make_agents_svg.py      # → assets/claude-agents.svg
 ./.venv/bin/python3 .claude/skills/onboarding-guide/scripts/make_claude_splash.py   # → assets/claude-splash.svg
+./.venv/bin/python3 .claude/skills/onboarding-guide/scripts/make_spotlight_svg.py   # → assets/spotlight.svg
 ./.venv/bin/python3 .claude/skills/onboarding-guide/scripts/build_html.py           # → ./start-here.html
 ```
 
