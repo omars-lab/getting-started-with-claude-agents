@@ -1,50 +1,77 @@
-# Working in this repo
+# Working in this repo (for developers)
 
 This is **getting-started-with-claude-agents** — a teaching example for Claude Code
-agent development. It contains one working agent (`stock-analyzer`) and a
-self-contained HTML onboarding guide that explains it.
+agent development. End users download a folder containing one working agent
+(`stock-analyzer`) and a self-contained HTML onboarding guide that explains it.
+This file is for people *maintaining* the repo, not for those learning from it.
 
-## Layout
+## Two Claude configs — important
 
-- `.claude/agents/stock-analyzer.md` — the agent (the *who*: a role + workflow).
-- `.claude/skills/*/SKILL.md` — the skills (the *how*: one recipe each).
-- `.claude/skills/onboarding-guide/` — generates `start-here.html`, the guide.
-- `agent-inputs/` — drop files here for the agent to use (e.g. `watchlist.md`).
-- `agent-outputs/` — everything the agent produces (gitignored).
-- `start-here.html` / `index.html` — the built guide (`index.html` is the GitHub Pages entry point).
+There are **two** agent configs, and they serve different audiences:
 
-## Common tasks (use the Makefile)
+| Path | What it is | Who uses it |
+|---|---|---|
+| `.claude/` (dotted) | **Dev config**, active when you open this repo in Claude Code. Contains ONLY the `onboarding-guide` skill — the tooling that builds the guide. | You, the maintainer. |
+| `claude/` (no dot) | **The maintained example** ("dist source"). Contains the `stock-analyzer` agent + its 10 teaching skills. Inactive in the repo (Claude Code only reads dotted `.claude`). | Shipped to end users. |
 
-- **Deploy everything** (the default after any change): `make ship` — builds once, uploads
-  the downloadable release zip, then commits and pushes (which rebuilds GitHub Pages). Use
-  this unless you specifically want just one of the steps below.
-- **Rebuild the guide** locally only: `make build` — regenerates all assets (terminal GIF,
-  Finder SVGs, splash, `/agents` panel) and assembles `start-here.html` + `index.html`.
-- **Publish the site only**: `make publish` — build, commit, push (no release upload).
-- **Refresh the download only**: `make release` — build, upload the fixed-name zip to the
-  GitHub `latest` release.
-- **One-time dev setup**: `make setup` — installs the build/test tooling (Pillow, Playwright
-  + Chromium) from `requirements-dev.txt` into the venv. The agent's *runtime* deps are
-  separate (`.claude/skills/ensure-deps/requirements.txt`, installed by `Setup.command`).
-- **Check responsive layout**: `make shots` — full-page screenshots of the guide at desktop
-  (1280) and mobile (390) widths into `tests/screenshots/`. Run `make setup` first.
-- **Share a local copy**: `make zip` — writes a timestamped zip to `~/Desktop`, omitting repo
-  tooling (`.venv`, `.git`, `Makefile`, `CLAUDE.md`, `.gitignore`, `index.html`, `tests/`, etc.).
+At package time, `make dist` copies `claude/` into the downloadable folder **as
+`.claude/`**, so what the user downloads is a normal, working Claude project. The
+dev `onboarding-guide` skill is never shipped — it's repo plumbing.
+
+**Consequence:** while developing here, `stock-analyzer` is NOT a live agent (it
+lives in `claude/`, which Claude Code ignores). That's intentional. To test it as a
+live agent, work inside a `make dist` copy, or temporarily symlink/rename.
+
+## Maintaining the example (the agent + its skills)
+
+Edit the teaching agent and skills under **`claude/`**:
+
+- `claude/agents/stock-analyzer.md` — the agent (the *who*: role + workflow).
+- `claude/skills/*/SKILL.md` — the 10 skills (the *how*: one recipe each).
+- `claude/settings.json` — permissions shipped with the example.
+
+If you **add or remove a teaching skill**, also update the guide so it stays accurate:
+- the skill count ("10 different skills" / "ten abilities") in the template,
+- the chip list and the `SKILLS` object in `start-here.html.tmpl`,
+- the skill folders shown in `make_finder_svgs.py`.
 
 ## Editing the guide
 
-Never edit `start-here.html` or `index.html` directly — they're generated. Edit the
-template at `.claude/skills/onboarding-guide/templates/start-here.html.tmpl` (prose,
-layout, CSS) or the asset scripts under `.../scripts/`, then run `make build`. The full
-recipe and conventions live in `.claude/skills/onboarding-guide/SKILL.md`.
+The guide is generated — **never edit `start-here.html` or `index.html` directly**.
+Edit the template at `.claude/skills/onboarding-guide/templates/start-here.html.tmpl`
+(prose, layout, CSS) or the asset scripts under `.claude/skills/onboarding-guide/scripts/`,
+then `make build`. Full conventions: `.claude/skills/onboarding-guide/SKILL.md`.
+
+## Common tasks (use the Makefile — `make help` lists all)
+
+- **Deploy everything** (default after any change): `make ship` — build once, upload the
+  release zip, commit + push (rebuilds GitHub Pages).
+- `make build` — regenerate assets + `start-here.html`/`index.html` (local only).
+- `make dist` — stage the exact downloadable folder in `dist/` (`claude/` → `.claude/`).
+  Inspect it to see precisely what a user gets.
+- `make zip` — timestamped share zip to `~/Desktop`, built from `dist/`.
+- `make release` — upload the fixed-name zip to the GitHub `latest` release (stable URL).
+- `make publish` — build, commit, push (site only).
+- `make setup` — install build/test tooling (Pillow, Playwright + Chromium) from
+  `requirements-dev.txt`. The agent's *runtime* deps are separate
+  (`claude/skills/ensure-deps/requirements.txt`, installed by the shipped `Setup.command`).
+- `make shots` — screenshot the guide at desktop (1280) + mobile (390) into
+  `tests/screenshots/`. Run `make setup` first.
+- `make clean` — remove `dist/`.
+
+## What ships vs what doesn't
+
+`make dist`/`zip`/`release` include: `claude/` (as `.claude/`), `start-here.html`,
+`README.md`, the `.command` launchers, `agent-inputs/` (with `watchlist.md`), and an
+empty `agent-outputs/` (placeholders only). They **omit** all repo tooling: the dev
+`.claude/`, `Makefile`, `CLAUDE.md`, `.gitignore`, `.pre-commit-config.yaml`,
+`requirements-dev.txt`, `index.html`, `tests/`, `dist/`, `.venv/`, `.git/`.
 
 ## Conventions
 
 - **Python**: always use the project venv — `./.venv/bin/python3`, never bare `python3`.
-  If `.venv/` is missing, run `Setup.command` (or `make build` will fail).
-- **Input/output**: the agent reads from `agent-inputs/` (it checks there at the start of
-  every run) and writes only to `agent-outputs/`.
-- **Secrets**: a gitleaks pre-commit hook scans staged changes. Don't commit credentials;
-  `.env*` reads are denied in `.claude/settings.json`.
+- **Input/output**: the agent reads from `agent-inputs/` (checked at the start of every
+  run) and writes only to `agent-outputs/`.
+- **Secrets**: a gitleaks pre-commit hook scans staged changes. Don't commit credentials.
 - **Self-contained guide**: `start-here.html` inlines every image as a data URI — no
-  external assets, no trackers. Keep it that way (add new images via `build_html.py`).
+  external assets, no trackers. Add new images via `build_html.py`.

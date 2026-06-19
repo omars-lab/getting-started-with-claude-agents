@@ -54,7 +54,7 @@ parts = [
     # body
     t(56, 156, "Create new agent", MUTED, 15),
     t(56, 206, "Project agent", INK, 15, "600"),
-    t(180, 206, "(/Users/omareid/Downloads/market-researcher/.claude/agents)", MUTED, 14),
+    t(180, 206, "(~/getting-started-with-claude-agents/.claude/agents)", MUTED, 14),
     # the configured agent row — highlighted to draw the eye
     f'<rect x="44" y="226" width="320" height="30" rx="6" fill="#F3E9CF"/>',
     t(56, 247, "stock-analyzer", INK, 16, "600"),

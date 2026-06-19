@@ -17,3 +17,6 @@ __pycache__/
 
 # Playwright screenshot output (the script tests/screenshots.py is tracked)
 tests/screenshots/
+
+# Build staging for the downloadable example
+dist/

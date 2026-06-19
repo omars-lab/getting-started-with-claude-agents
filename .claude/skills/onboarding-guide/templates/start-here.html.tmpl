@@ -286,9 +286,9 @@
 
       <h3 style="margin:34px 0 4px;font-size:18px">What this guide walks through</h3>
       <p style="color:var(--ink-soft);margin-bottom:14px">In this guide we'll walk through
-        how a <b>stock-analysis agent</b> was configured and given <b>11 different skills</b>
+        how a <b>stock-analysis agent</b> was configured and given <b>10 different skills</b>
         — and how it uses them to turn a morning market scan into a research report. The
-        same who/how idea, made concrete: one researcher agent and its eleven abilities.</p>
+        same who/how idea, made concrete: one researcher agent and its ten abilities.</p>
       <div class="split">
         <div class="card who">
           <span class="tag">The who · agent</span>
@@ -298,7 +298,7 @@
             description you'd hand a new analyst.</p>
         </div>
         <div class="card how">
-          <span class="tag">The how · skill <span class="cyclehint">· cycling through 11</span></span>
+          <span class="tag">The how · skill <span class="cyclehint">· cycling through 10</span></span>
           <div id="skillcycle" class="cyclebody">
             <h3 id="cyc-name">growth-study</h3>
             <div class="sub" id="cyc-path">.claude/skills/growth-study/SKILL.md</div>
@@ -433,7 +433,7 @@
               it owns, numbered steps, the standards that make it trustworthy, and the
               mistakes to avoid. <b>Click a skill</b> to see what it does:</p>
             <div class="chips" id="skillchips">
-              <button class="chip" data-skill="ensure-deps">ensure-deps</button><button class="chip" data-skill="ticker-discovery">ticker-discovery</button><button class="chip" data-skill="stock-discovery">stock-discovery</button><button class="chip" data-skill="hidden-opportunities">hidden-opportunities</button><button class="chip" data-skill="ticker-data">ticker-data</button><button class="chip" data-skill="stock-analysis">stock-analysis</button><button class="chip" data-skill="growth-study">growth-study</button><button class="chip" data-skill="xlsx-author">xlsx-author</button><button class="chip" data-skill="thesis-stress-test">thesis-stress-test</button><button class="chip" data-skill="explain-agent">explain-agent</button><button class="chip" data-skill="onboarding-guide">onboarding-guide</button>
+              <button class="chip" data-skill="ensure-deps">ensure-deps</button><button class="chip" data-skill="ticker-discovery">ticker-discovery</button><button class="chip" data-skill="stock-discovery">stock-discovery</button><button class="chip" data-skill="hidden-opportunities">hidden-opportunities</button><button class="chip" data-skill="ticker-data">ticker-data</button><button class="chip" data-skill="stock-analysis">stock-analysis</button><button class="chip" data-skill="growth-study">growth-study</button><button class="chip" data-skill="xlsx-author">xlsx-author</button><button class="chip" data-skill="thesis-stress-test">thesis-stress-test</button><button class="chip" data-skill="explain-agent">explain-agent</button>
             </div>
             <div class="skilldesc" id="skilldesc" aria-live="polite">
               <span class="hint">↑ Pick a skill to read its one-line job.</span>
@@ -642,7 +642,6 @@
 <footer>
   <div class="wrap">
     Stock Analyzer — a teaching example for Claude Code agents.
-    Regenerate this guide any time with the <code>onboarding-guide</code> skill.
     · Built to open offline; no trackers, no external assets.
   </div>
 </footer>
@@ -668,8 +667,7 @@
     "growth-study":        ["The model", "Spreads revenue and growth (MoM/QoQ/YoY) into a 3-tab Excel workbook — Fundamentals, News, Historical — referenced by the report."],
     "xlsx-author":         ["Shared workbook discipline", "The conventions every spreadsheet follows: formulas (never hardcoded results), each input commented with its source. Reused by growth-study."],
     "thesis-stress-test":  ["The validation step", "Runs 'what if X happens' scenarios against the thesis, surfaces falsifiable claims, and steelmans the bear case before anything is presented."],
-    "explain-agent":       ["Self-explanation", "Generates an interactive HTML diagram of how the agent works — which skill fires when, what data flows where, which guardrails apply."],
-    "onboarding-guide":    ["This guide", "Regenerates the start-here.html walkthrough you're reading, with its Finder mockups and terminal GIF."]
+    "explain-agent":       ["Self-explanation", "Generates an interactive HTML diagram of how the agent works — which skill fires when, what data flows where, which guardrails apply."]
   };
   const chips = document.querySelectorAll('#skillchips .chip');
   const out = document.getElementById('skilldesc');

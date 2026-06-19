@@ -10,7 +10,7 @@
 <text x="278" y="106" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">Library</text>
 <text x="56" y="156" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="400" fill="#6B6960" text-anchor="start">Create new agent</text>
 <text x="56" y="206" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="600" fill="#33312E" text-anchor="start">Project agent</text>
-<text x="180" y="206" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" font-weight="400" fill="#6B6960" text-anchor="start">(/Users/omareid/Downloads/market-researcher/.claude/agents)</text>
+<text x="180" y="206" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" font-weight="400" fill="#6B6960" text-anchor="start">(~/getting-started-with-claude-agents/.claude/agents)</text>
 <rect x="44" y="226" width="320" height="30" rx="6" fill="#F3E9CF"/>
 <text x="56" y="247" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="600" fill="#33312E" text-anchor="start">stock-analyzer</text>
 <text x="196" y="247" font-family="SF Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="400" fill="#6B6960" text-anchor="start">·</text>
