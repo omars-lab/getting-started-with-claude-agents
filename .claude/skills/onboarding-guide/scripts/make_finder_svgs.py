@@ -92,7 +92,11 @@ def row(i, name, kind, hidden=False, note=None, selected=False):
     return "".join(parts)
 
 
-def window(rows, title, badge=None):
+def window(rows, title, badge=None, crumbs=None):
+    """title: leaf name (shown when at the top folder).
+    crumbs: optional list of path segments relative to (and including) the top
+    folder, e.g. ["getting-started-with-claude-agents", ".claude", "skills"].
+    When given, the title bar renders a breadcrumb with the last crumb emphasized."""
     n = len(rows)
     height = TOP + n * ROW_H + 18
     parts = [
@@ -106,10 +110,25 @@ def window(rows, title, badge=None):
     for j, col in enumerate(["#ED6A5E", "#F5BF4F", "#62C554"]):
         cx = 22 + j * 20
         parts.append(f'<circle cx="{cx}" cy="20" r="6" fill="{col}"/>')
-    parts.append(
-        f'<text x="{W//2}" y="25" text-anchor="middle" font-size="13" '
-        f'font-weight="600" fill="{TEXT}">{esc(title)}</text>'
-    )
+    if crumbs and len(crumbs) > 1:
+        # breadcrumb: dim ancestors joined by ›, current (last) crumb emphasized
+        spans = []
+        for i, c in enumerate(crumbs):
+            last = i == len(crumbs) - 1
+            fill = TEXT if last else DIM
+            wt = "600" if last else "500"
+            if i > 0:
+                spans.append(f'<tspan fill="{DIM}" font-weight="400"> › </tspan>')
+            spans.append(f'<tspan fill="{fill}" font-weight="{wt}">{esc(c)}</tspan>')
+        parts.append(
+            f'<text x="{W//2}" y="25" text-anchor="middle" font-size="13">'
+            + "".join(spans) + '</text>'
+        )
+    else:
+        parts.append(
+            f'<text x="{W//2}" y="25" text-anchor="middle" font-size="13" '
+            f'font-weight="600" fill="{TEXT}">{esc(title)}</text>'
+        )
     # sidebar
     parts.append(f'<rect x="0" y="52" width="200" height="{height-52}" fill="{SIDEBAR}"/>')
     parts.append(f'<rect x="0" y="52" width="200" height="{height-52}" fill="{SIDEBAR}"/>')
@@ -170,7 +189,7 @@ inside = [
 ]
 rows_inside = [row(i, *v) for i, v in enumerate(inside)]
 (ASSETS / "finder-claude.svg").write_text(
-    window(rows_inside, ".claude")
+    window(rows_inside, ".claude", crumbs=[FOLDER, ".claude"])
 )
 
 # --- inside .claude/agents/ (Make it yours: the role file) ---
@@ -179,7 +198,7 @@ agents = [
 ]
 rows_agents = [row(i, *v) for i, v in enumerate(agents)]
 (ASSETS / "finder-agents.svg").write_text(
-    window(rows_agents, "agents")
+    window(rows_agents, "agents", crumbs=[FOLDER, ".claude", "agents"])
 )
 
 # --- inside .claude/skills/ (Make it yours: copy a SKILL.md) ---
@@ -193,7 +212,7 @@ skills = [
 ]
 rows_skills = [row(i, *v) for i, v in enumerate(skills)]
 (ASSETS / "finder-skills.svg").write_text(
-    window(rows_skills, "skills")
+    window(rows_skills, "skills", crumbs=[FOLDER, ".claude", "skills"])
 )
 
 for f in ["finder-hidden.svg", "finder-shown.svg", "finder-claude.svg",

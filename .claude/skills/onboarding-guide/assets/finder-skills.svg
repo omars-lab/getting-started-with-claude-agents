@@ -4,7 +4,7 @@
 <circle cx="22" cy="20" r="6" fill="#ED6A5E"/>
 <circle cx="42" cy="20" r="6" fill="#F5BF4F"/>
 <circle cx="62" cy="20" r="6" fill="#62C554"/>
-<text x="360" y="25" text-anchor="middle" font-size="13" font-weight="600" fill="#1D1D1F">skills</text>
+<text x="360" y="25" text-anchor="middle" font-size="13"><tspan fill="#8A8A8E" font-weight="500">getting-started-with-claude-agents</tspan><tspan fill="#8A8A8E" font-weight="400"> › </tspan><tspan fill="#8A8A8E" font-weight="500">.claude</tspan><tspan fill="#8A8A8E" font-weight="400"> › </tspan><tspan fill="#1D1D1F" font-weight="600">skills</tspan></text>
 <rect x="0" y="52" width="200" height="242" fill="#F5F5F7"/>
 <rect x="0" y="52" width="200" height="242" fill="#F5F5F7"/>
 <text x="20" y="76" font-size="12.5" font-weight="600" fill="#8A8A8E">Favorites</text>

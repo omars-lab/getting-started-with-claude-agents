@@ -84,7 +84,10 @@
   .cyclebody{transition:opacity .45s ease}
   .cyclebody.fade{opacity:0}
   @media (prefers-reduced-motion:reduce){.cyclebody{transition:none}}
-  .card.how .cyclebody{min-height:150px}
+  /* Fixed height so swapping skills never shifts the page; long text ellipsizes. */
+  .card.how .cyclebody{height:158px;overflow:hidden}
+  #cyc-desc{display:-webkit-box;-webkit-line-clamp:4;line-clamp:4;
+    -webkit-box-orient:vertical;overflow:hidden}
   .cycdots{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
   .cycdots span{width:6px;height:6px;border-radius:50%;background:#E6D9BE;transition:background .3s}
   .cycdots span.on{background:var(--wheat)}
