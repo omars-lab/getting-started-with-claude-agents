@@ -204,7 +204,7 @@
 <header class="hero">
   <div class="wrap">
     <p class="eyebrow">A field guide to one working agent</p>
-    <h1>Meet the<br>Stock&nbsp;Analyzer.</h1>
+    <h1>Meet the<br>Stock&nbsp;Analyzer Agent.</h1>
     <p class="lede">You know how a research desk works. This folder turns that
       knowledge into a working Claude&nbsp;Code agent — and it's built to be
       <em>read</em>, not just run. Ten minutes here and the question
@@ -212,7 +212,7 @@
     <div class="stamp"><span class="dot"></span> No code required to read along · macOS · open offline</div>
     <nav class="toc">
       <a href="#big-idea">The big idea</a>
-      <a href="#need">What you need</a>
+      <a href="#need">Before we begin</a>
       <a href="#open">Open it</a>
       <a href="#reveal">Reveal .claude</a>
       <a href="#anatomy">Inside .claude</a>
@@ -231,7 +231,7 @@
     <div>
       <h2>An agent is a who. A skill is a how.</h2>
       <p>That's the whole mental model, and it holds for <em>any</em> agent, in any
-        domain. You give the agent a <b>goal</b>; it carries out <b>skills</b> —
+        domain. You give the agent a <b>goal</b>; it leverages its <b>skills</b> —
         sets of instructions — to reach it.</p>
       <div class="split">
         <div class="card who">
@@ -275,9 +275,11 @@
         each other, which is exactly why you can copy one into another agent or
         rewrite it without touching the rest.</p>
 
-      <h3 style="margin:34px 0 4px;font-size:18px">In this folder, that's:</h3>
-      <p style="color:var(--ink-soft);margin-bottom:14px">The same idea, made concrete
-        — one researcher agent and one of its eleven skills.</p>
+      <h3 style="margin:34px 0 4px;font-size:18px">What this guide walks through</h3>
+      <p style="color:var(--ink-soft);margin-bottom:14px">In this guide we'll walk through
+        how a <b>stock-analysis agent</b> was configured and given <b>11 different skills</b>
+        — and how it uses them to turn a morning market scan into a research report. The
+        same who/how idea, made concrete: one researcher agent and its eleven abilities.</p>
       <div class="split">
         <div class="card who">
           <span class="tag">The who · agent</span>
@@ -301,22 +303,27 @@
 <!-- ============================================================ NEED -->
 <section id="need">
   <div class="wrap row">
-    <aside class="note"><b>prerequisite</b>the one thing to install first</aside>
+    <aside class="note"><b>before we begin</b>two things to set up first</aside>
     <div>
-      <h2>What you need: Claude Code</h2>
-      <p>This whole folder runs inside <b>Claude&nbsp;Code</b>, Anthropic's
-        command-line coding agent. It's the program that reads the agent
-        definition and does the work. If you don't have it yet, start here:</p>
+      <h2>Before we begin</h2>
+      <p>The agent we'll download is a <b>Claude&nbsp;Code subagent</b> — a specialized
+        assistant that Claude&nbsp;Code loads from a folder and delegates work to. So
+        before we can leverage it, we need two things in place: the program that runs it,
+        and the folder that defines it.</p>
+      <p>First, <b>Claude&nbsp;Code</b> itself — Anthropic's command-line coding agent. It's
+        the program that reads the agent definition and does the work. If you don't have it
+        yet, start here:</p>
       <div class="callout">
-        <h3>Install Claude Code first</h3>
+        <h3>1 · Install Claude Code</h3>
         <p>Read the overview and follow the install steps at
           <a href="https://code.claude.com/docs/en/overview" target="_blank" rel="noopener">code.claude.com/docs/en/overview</a>.
           Once <code>claude</code> runs in your terminal, come back here.</p>
       </div>
       <div class="callout" style="margin-top:14px;border-left-color:var(--terra)">
-        <h3>Then grab this folder</h3>
-        <p>Download the example folder, unzip it, and open it in Finder — that's what
-          the rest of this guide walks you through.</p>
+        <h3>2 · Download this folder</h3>
+        <p>This folder <em>is</em> the subagent — the agent definition, its skills, and the
+          input/output trays. Download it, unzip it, and open it in Finder; the rest of this
+          guide walks you through it.</p>
         <p style="margin-top:14px">
           <a class="dlbtn" href="https://github.com/omars-lab/getting-started-with-claude-agents/releases/latest/download/getting-started-with-claude-agents.zip">↓ Download the folder (.zip)</a>
         </p>
