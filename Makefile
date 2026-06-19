@@ -80,6 +80,8 @@ dist:
 	@printf 'The Stock Analyzer writes everything it produces here — reports,\nworkbooks, and the per-ticker data cache. Empty until you run the agent.\n' > "$(DIST)/agent-outputs/README.txt"
 	@touch "$(DIST)/agent-outputs/.gitkeep"
 	@find "$(DIST)" -name '.DS_Store' -delete
+	@find "$(DIST)" -name '__pycache__' -type d -prune -exec rm -rf {} +
+	@find "$(DIST)" -name '*.pyc' -delete
 	@echo "Staged downloadable example in $(DIST)/"
 
 # Timestamped zip onto the Desktop, built from the staged dist/.

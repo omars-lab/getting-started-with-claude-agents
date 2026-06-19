@@ -124,7 +124,6 @@ The skills always invoke Python via `./.venv/bin/python3`, never bare `python3`.
     explain-agent/SKILL.md       ← visualization
       scripts/serve.py
       templates/diagram.html.j2
-    _archive/                    ← superseded skills, kept for reference
   plans/
     refactor-to-stock-analyzer.md  ← how this repo got here
   settings.json                    ← project permissions
