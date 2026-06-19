@@ -19,10 +19,11 @@ REL_TAG   := latest
 REL_ASSET := $(NAME).zip
 REPO_SLUG := omars-lab/$(NAME)
 
-.PHONY: help build publish zip release ship shots _push _upload
+.PHONY: help setup build publish zip release ship shots _push _upload
 
 help:
 	@echo "Targets:"
+	@echo "  make setup    Install dev tooling (Pillow, Playwright + Chromium) into the venv"
 	@echo "  make build    Regenerate the guide (start-here.html + index.html) and assets"
 	@echo "  make publish  Build, commit, and push — updates the live GitHub Pages site"
 	@echo "  make release  Build a fresh zip and upload it to the GitHub 'latest' release"
@@ -34,6 +35,13 @@ help:
 # Needs playwright in the venv (see tests/screenshots.py for setup).
 shots: build
 	@$(PY) tests/screenshots.py
+
+# Install developer tooling into the venv (guide build + screenshot tests).
+# The agent's own runtime deps install via Setup.command / ensure-deps.
+setup:
+	@$(PY) -m pip install -q -r requirements-dev.txt
+	@$(PY) -m playwright install chromium
+	@echo "Dev tooling ready (Pillow, Playwright + Chromium)."
 
 # Regenerate every asset, then assemble the guide. Mirrors the onboarding-guide skill.
 build:
@@ -70,6 +78,7 @@ zip:
 		-x '.pre-commit-config.yaml' \
 		-x 'CLAUDE.md' \
 		-x 'index.html' \
+		-x 'requirements-dev.txt' \
 		-x 'tests/*' \
 		-x 'agent-outputs/*' \
 		-x '.DS_Store' '*/.DS_Store' \
@@ -86,7 +95,7 @@ _upload:
 		-x '*/.venv/*' '.venv/*' -x '*/.git/*' '.git/*' \
 		-x 'Makefile' -x '*.zip' -x '.gitignore' \
 		-x '.pre-commit-config.yaml' -x 'CLAUDE.md' -x 'index.html' \
-		-x 'tests/*' \
+		-x 'requirements-dev.txt' -x 'tests/*' \
 		-x 'agent-outputs/*' -x '.DS_Store' '*/.DS_Store' \
 		-x '__pycache__/*' '*/__pycache__/*' && \
 	zip -q "$$OUT" agent-outputs/.gitkeep agent-outputs/README.txt && \

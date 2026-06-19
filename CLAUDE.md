@@ -23,9 +23,11 @@ self-contained HTML onboarding guide that explains it.
 - **Publish the site only**: `make publish` — build, commit, push (no release upload).
 - **Refresh the download only**: `make release` — build, upload the fixed-name zip to the
   GitHub `latest` release.
+- **One-time dev setup**: `make setup` — installs the build/test tooling (Pillow, Playwright
+  + Chromium) from `requirements-dev.txt` into the venv. The agent's *runtime* deps are
+  separate (`.claude/skills/ensure-deps/requirements.txt`, installed by `Setup.command`).
 - **Check responsive layout**: `make shots` — full-page screenshots of the guide at desktop
-  (1280) and mobile (390) widths into `tests/screenshots/`. Needs Playwright in the venv:
-  `./.venv/bin/python3 -m pip install playwright && ./.venv/bin/python3 -m playwright install chromium`.
+  (1280) and mobile (390) widths into `tests/screenshots/`. Run `make setup` first.
 - **Share a local copy**: `make zip` — writes a timestamped zip to `~/Desktop`, omitting repo
   tooling (`.venv`, `.git`, `Makefile`, `CLAUDE.md`, `.gitignore`, `index.html`, `tests/`, etc.).
 

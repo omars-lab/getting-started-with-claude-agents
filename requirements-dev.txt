@@ -1,0 +1,16 @@
+# Developer tooling for building and testing the onboarding guide.
+# NOT needed to run the stock-analyzer agent — those deps live in
+# .claude/skills/ensure-deps/requirements.txt.
+#
+# Install into the project venv:
+#   ./.venv/bin/pip install -r requirements-dev.txt
+#   ./.venv/bin/python3 -m playwright install chromium
+#
+# Used by: `make build` (Pillow renders the terminal GIF) and
+#          `make shots` (Playwright screenshots the guide).
+
+# Terminal GIF rendering (onboarding-guide/scripts/make_terminal_gif.py)
+pillow>=10.0
+
+# Responsive screenshots (tests/screenshots.py)
+playwright>=1.40

@@ -4,9 +4,8 @@
 Loads ./start-here.html in headless Chromium and writes full-page PNGs to
 tests/screenshots/. Use to eyeball responsive layout after editing the guide.
 
-Setup (one-time, in the project venv):
-    ./.venv/bin/python3 -m pip install playwright
-    ./.venv/bin/python3 -m playwright install chromium
+Setup (one-time): `make setup`
+  (installs requirements-dev.txt + Chromium into the project venv)
 
 Run:
     ./.venv/bin/python3 tests/screenshots.py
