@@ -75,6 +75,15 @@
   .card h3{margin:10px 0 4px;font-size:20px}
   .card .sub{color:var(--dim);font-family:var(--mono);font-size:12.5px;margin-bottom:14px}
   .card p{font-size:15.5px;margin-bottom:0}
+  /* cycling skill card */
+  .cyclehint{color:var(--dim);font-weight:400}
+  .cyclebody{transition:opacity .45s ease}
+  .cyclebody.fade{opacity:0}
+  @media (prefers-reduced-motion:reduce){.cyclebody{transition:none}}
+  .card.how .cyclebody{min-height:150px}
+  .cycdots{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+  .cycdots span{width:6px;height:6px;border-radius:50%;background:#E6D9BE;transition:background .3s}
+  .cycdots span.on{background:var(--wheat)}
   .vs{font-family:var(--mono);font-weight:600;color:var(--dim);text-align:center;
     margin:18px 0 4px;font-size:13px;letter-spacing:.2em}
   .keylines{margin:24px 0 4px;display:grid;gap:10px}
@@ -289,11 +298,14 @@
             description you'd hand a new analyst.</p>
         </div>
         <div class="card how">
-          <span class="tag">The how · skill</span>
-          <h3>growth-study</h3>
-          <div class="sub">.claude/skills/growth-study/SKILL.md</div>
-          <p>One ability: "spread the financials into a workbook." It does that one
-            job well and is picked up when the moment calls for it.</p>
+          <span class="tag">The how · skill <span class="cyclehint">· cycling through 11</span></span>
+          <div id="skillcycle" class="cyclebody">
+            <h3 id="cyc-name">growth-study</h3>
+            <div class="sub" id="cyc-path">.claude/skills/growth-study/SKILL.md</div>
+            <p id="cyc-desc">One ability: "spread the financials into a workbook." It does
+              that one job well and is picked up when the moment calls for it.</p>
+          </div>
+          <div class="cycdots" id="cyc-dots" aria-hidden="true"></div>
         </div>
       </div>
     </div>
@@ -666,6 +678,37 @@
     const s = SKILLS[c.dataset.skill];
     out.innerHTML = '<b>' + c.dataset.skill + '</b> <span class="role">— ' + s[0] + '</span><br>' + s[1];
   }));
+
+  // Cycling skill card in the "In this folder" example — fade through all 11.
+  (function () {
+    const names = Object.keys(SKILLS);
+    const body = document.getElementById('skillcycle');
+    const nameEl = document.getElementById('cyc-name');
+    const pathEl = document.getElementById('cyc-path');
+    const descEl = document.getElementById('cyc-desc');
+    const dotsEl = document.getElementById('cyc-dots');
+    if (!body) return;
+    // build dots
+    names.forEach(() => dotsEl.appendChild(document.createElement('span')));
+    const dots = dotsEl.children;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let i = 0;
+    function paint(n) {
+      const role = SKILLS[n][0], desc = SKILLS[n][1];
+      nameEl.textContent = n;
+      pathEl.textContent = '.claude/skills/' + n + '/SKILL.md';
+      descEl.innerHTML = '<b>' + role + '.</b> ' + desc;
+      for (let k = 0; k < dots.length; k++) dots[k].classList.toggle('on', names[k] === n);
+    }
+    paint(names[0]);
+    function next() {
+      i = (i + 1) % names.length;
+      if (reduce) { paint(names[i]); return; }
+      body.classList.add('fade');
+      setTimeout(() => { paint(names[i]); body.classList.remove('fade'); }, 450);
+    }
+    setInterval(next, 2600);
+  })();
 </script>
 </body>
 </html>

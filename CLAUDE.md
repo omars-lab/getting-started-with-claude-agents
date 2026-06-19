@@ -23,8 +23,11 @@ self-contained HTML onboarding guide that explains it.
 - **Publish the site only**: `make publish` — build, commit, push (no release upload).
 - **Refresh the download only**: `make release` — build, upload the fixed-name zip to the
   GitHub `latest` release.
+- **Check responsive layout**: `make shots` — full-page screenshots of the guide at desktop
+  (1280) and mobile (390) widths into `tests/screenshots/`. Needs Playwright in the venv:
+  `./.venv/bin/python3 -m pip install playwright && ./.venv/bin/python3 -m playwright install chromium`.
 - **Share a local copy**: `make zip` — writes a timestamped zip to `~/Desktop`, omitting repo
-  tooling (`.venv`, `.git`, `Makefile`, `CLAUDE.md`, `.gitignore`, `index.html`, etc.).
+  tooling (`.venv`, `.git`, `Makefile`, `CLAUDE.md`, `.gitignore`, `index.html`, `tests/`, etc.).
 
 ## Editing the guide
 

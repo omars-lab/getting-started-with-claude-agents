@@ -19,7 +19,7 @@ REL_TAG   := latest
 REL_ASSET := $(NAME).zip
 REPO_SLUG := omars-lab/$(NAME)
 
-.PHONY: help build publish zip release ship _push _upload
+.PHONY: help build publish zip release ship shots _push _upload
 
 help:
 	@echo "Targets:"
@@ -27,7 +27,13 @@ help:
 	@echo "  make publish  Build, commit, and push — updates the live GitHub Pages site"
 	@echo "  make release  Build a fresh zip and upload it to the GitHub 'latest' release"
 	@echo "  make ship     Build once, then release AND publish (one command, full deploy)"
+	@echo "  make shots    Screenshot the guide at desktop + mobile widths (tests/screenshots/)"
 	@echo "  make zip      Create ~/Desktop/$(NAME)-<timestamp>.zip for sharing"
+
+# Visual check: full-page screenshots at desktop + mobile widths.
+# Needs playwright in the venv (see tests/screenshots.py for setup).
+shots: build
+	@$(PY) tests/screenshots.py
 
 # Regenerate every asset, then assemble the guide. Mirrors the onboarding-guide skill.
 build:
@@ -64,6 +70,7 @@ zip:
 		-x '.pre-commit-config.yaml' \
 		-x 'CLAUDE.md' \
 		-x 'index.html' \
+		-x 'tests/*' \
 		-x 'agent-outputs/*' \
 		-x '.DS_Store' '*/.DS_Store' \
 		-x '__pycache__/*' '*/__pycache__/*'
@@ -79,6 +86,7 @@ _upload:
 		-x '*/.venv/*' '.venv/*' -x '*/.git/*' '.git/*' \
 		-x 'Makefile' -x '*.zip' -x '.gitignore' \
 		-x '.pre-commit-config.yaml' -x 'CLAUDE.md' -x 'index.html' \
+		-x 'tests/*' \
 		-x 'agent-outputs/*' -x '.DS_Store' '*/.DS_Store' \
 		-x '__pycache__/*' '*/__pycache__/*' && \
 	zip -q "$$OUT" agent-outputs/.gitkeep agent-outputs/README.txt && \

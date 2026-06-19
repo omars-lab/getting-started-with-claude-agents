@@ -14,3 +14,6 @@ agent-outputs/
 # Python
 __pycache__/
 *.pyc
+
+# Playwright screenshot output (the script tests/screenshots.py is tracked)
+tests/screenshots/
