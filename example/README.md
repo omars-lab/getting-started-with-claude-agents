@@ -86,8 +86,10 @@ Double-clickable launchers, for the non-terminal path:
 
 - **`Setup.command`** — one-time venv + dependency install.
 - **`Open in Claude.command`** — launch Claude Code in this folder.
-- **`View Guide.command`** — open the visual walkthrough (`start-here.html`).
 - **`Open Outputs.command`** / **`Drop Files Here.command`** — jump to `agent-outputs/` and `agent-inputs/`.
+
+> New here? Read the visual walkthrough first:
+> <https://blog.bytesofpurpose.com/getting-started-with-claude-agents/>
 
 ### Giving the agent files, getting files back
 
@@ -125,20 +127,14 @@ The skills always invoke Python via `./.venv/bin/python3`, never bare `python3`.
       scripts/serve.py
       templates/diagram.html.j2
     _archive/                    ← superseded skills, kept for reference
-    onboarding-guide/SKILL.md    ← regenerates start-here.html + its assets
-      scripts/                       ← GIF, Finder mockups, HTML builder
-      templates/start-here.html.tmpl
-      assets/                        ← generated GIF + SVG mockups
   plans/
     refactor-to-stock-analyzer.md  ← how this repo got here
   settings.json                    ← project permissions
-.venv/                             ← Python venv (you create this)
+.venv/                             ← Python venv (Setup.command creates this)
 Setup.command                      ← double-click for one-time venv + deps install
 Open in Claude.command             ← double-click to launch Claude here
-View Guide.command                 ← double-click to open start-here.html
 Open Outputs.command               ← double-click to open agent-outputs/
 Drop Files Here.command            ← double-click to open agent-inputs/
-start-here.html                    ← visual onboarding guide (open offline)
 agent-inputs/                      ← drop files for the agent here
 agent-outputs/                     ← the agent writes results here
 README.md                          ← this file

@@ -1,6 +1,6 @@
 # Makefile for getting-started-with-claude-agents
 #
-#   make build    → regenerate start-here.html + index.html and all assets
+#   make build    → regenerate the web guide (index.html) and all assets
 #   make publish  → build, commit, and push (updates the live GitHub Pages site)
 #   make zip      → timestamped zip of this folder for sharing (omits repo tooling)
 #   make help     → list targets
@@ -26,8 +26,8 @@ DIST := dist/$(NAME)
 help:
 	@echo "Targets:"
 	@echo "  make setup    Install dev tooling (Pillow, Playwright + Chromium) into the venv"
-	@echo "  make build    Regenerate the guide (start-here.html + index.html) and assets"
-	@echo "  make dist     Stage the downloadable example in dist/ (claude/ → .claude/)"
+	@echo "  make build    Regenerate the web guide (index.html) and assets"
+	@echo "  make dist     Stage the downloadable example in dist/ (clean copy of example/)"
 	@echo "  make publish  Build, commit, and push — updates the live GitHub Pages site"
 	@echo "  make release  Build a fresh zip and upload it to the GitHub 'latest' release"
 	@echo "  make ship     Build once, then release AND publish (one command, full deploy)"
@@ -68,20 +68,16 @@ _push:
 # Build, then commit and push (updates the live GitHub Pages site).
 publish: build _push
 
-# Stage the exact folder a user downloads into dist/$(NAME):
-#   - claude/ (the maintained teaching example) is copied in AS .claude/
-#   - the dev .claude/ (onboarding-guide tooling) is NOT included
-#   - repo tooling (Makefile, CLAUDE.md, tests/, requirements-dev.txt, …) is omitted
-#   - agent-outputs/ ships empty (placeholders only); agent-inputs/ keeps watchlist.md
-# This is the single source of truth for both `zip` and `release`.
+# Stage the exact folder a user downloads into dist/$(NAME).
+# The example/ directory IS the shippable folder (real dotted .claude/), so this
+# is just a clean copy with generated agent-outputs/ data stripped to placeholders.
+# The web-only guide (index.html) and all repo tooling stay out by construction.
 dist:
-	@rm -rf dist && mkdir -p "$(DIST)"
-	@cp -R claude "$(DIST)/.claude"
-	@cp -R agent-inputs "$(DIST)/agent-inputs"
-	@mkdir -p "$(DIST)/agent-outputs"
-	@cp agent-outputs/.gitkeep agent-outputs/README.txt "$(DIST)/agent-outputs/" 2>/dev/null || true
-	@cp README.md start-here.html "$(DIST)/"
-	@cp *.command "$(DIST)/"
+	@rm -rf dist && mkdir -p dist
+	@cp -R example "$(DIST)"
+	@rm -f "$(DIST)/agent-outputs/"* 2>/dev/null || true
+	@printf 'The Stock Analyzer writes everything it produces here — reports,\nworkbooks, and the per-ticker data cache. Empty until you run the agent.\n' > "$(DIST)/agent-outputs/README.txt"
+	@touch "$(DIST)/agent-outputs/.gitkeep"
 	@find "$(DIST)" -name '.DS_Store' -delete
 	@echo "Staged downloadable example in $(DIST)/"
 

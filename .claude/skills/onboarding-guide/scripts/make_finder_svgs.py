@@ -136,33 +136,31 @@ def window(rows, title, badge=None):
     return "\n".join(parts)
 
 
+FOLDER = "getting-started-with-claude-agents"
+
 # --- hidden view (what they see first) ---
 visible = [
     ("agent-inputs", "folder", False, "drop files here", False),
     ("agent-outputs", "folder", False, "results land here", False),
-    ("Open in Claude.command", "command", False, "double-click", False),
+    ("Open in Claude.command", "command", False, "← double-click", True),
     ("README.md", "file", False, "start here", False),
-    ("start-here.html", "file", False, "this guide", True),
-    ("View Guide.command", "command", False, None, False),
 ]
 rows_hidden = [row(i, *v) for i, v in enumerate(visible)]
 (ASSETS / "finder-hidden.svg").write_text(
-    window(rows_hidden, "market-researcher")
+    window(rows_hidden, FOLDER)
 )
 
 # --- shown view (after Cmd+Shift+.) ---
 shown = [
     (".claude", "folder", True, "the agent lives here", True),
-    (".venv", "folder", True, "python tools", False),
     ("agent-inputs", "folder", False, "drop files here", False),
     ("agent-outputs", "folder", False, "results land here", False),
     ("Open in Claude.command", "command", False, "double-click", False),
     ("README.md", "file", False, None, False),
-    ("start-here.html", "file", False, "this guide", False),
 ]
 rows_shown = [row(i, *v) for i, v in enumerate(shown)]
 (ASSETS / "finder-shown.svg").write_text(
-    window(rows_shown, "market-researcher", badge="⌘ ⇧ .  pressed")
+    window(rows_shown, FOLDER, badge="⌘ ⇧ .  pressed")
 )
 
 # --- inside .claude ---
@@ -180,13 +178,12 @@ rows_inside = [row(i, *v) for i, v in enumerate(inside)]
 # --- the launcher to double-click (Getting Started, step 1) ---
 launch = [
     ("Open in Claude.command", "command", False, "← double-click this", True),
-    ("View Guide.command", "command", False, None, False),
+    ("Setup.command", "command", False, "one-time setup", False),
     ("README.md", "file", False, None, False),
-    ("start-here.html", "file", False, None, False),
 ]
 rows_launch = [row(i, *v) for i, v in enumerate(launch)]
 (ASSETS / "finder-launch.svg").write_text(
-    window(rows_launch, "market-researcher")
+    window(rows_launch, FOLDER)
 )
 
 # --- inside .claude/agents/ (Make it yours: the role file) ---

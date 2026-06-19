@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Assemble the self-contained start-here.html from the template + assets.
+"""Assemble the self-contained onboarding guide from the template + assets.
 
 Reads templates/start-here.html.tmpl, inlines every asset in assets/ as a
-base64 data URI (so the file opens offline with no external dependencies),
-and writes start-here.html at the repo root.
+base64 data URI (so the page has no external dependencies), and writes
+index.html at the repo root — the GitHub Pages entry point. The guide is
+web-only; it is not shipped inside the downloadable example.
 
 Run via:  ./.venv/bin/python3 scripts/build_html.py
 """
@@ -14,9 +15,9 @@ HERE = pathlib.Path(__file__).resolve().parent
 SKILL = HERE.parent
 ASSETS = SKILL / "assets"
 TEMPLATE = SKILL / "templates" / "start-here.html.tmpl"
-# repo root = .../market-researcher (skill is .claude/skills/onboarding-guide)
+# repo root (skill is .claude/skills/onboarding-guide)
 REPO = SKILL.parent.parent.parent
-OUT = REPO / "start-here.html"
+OUT = REPO / "index.html"
 
 EMBEDS = {
     "__TERMINAL_GIF__": ("terminal.gif", "image/gif"),
@@ -44,11 +45,7 @@ def main():
     if missing:
         raise SystemExit(f"unreplaced tokens: {missing}")
     OUT.write_text(html)
-    print(f"wrote {OUT}  ({OUT.stat().st_size // 1024} KB, fully self-contained)")
-    # Also publish as index.html so GitHub Pages serves the guide at the site root.
-    INDEX = REPO / "index.html"
-    INDEX.write_text(html)
-    print(f"wrote {INDEX}  (GitHub Pages entry point)")
+    print(f"wrote {OUT}  ({OUT.stat().st_size // 1024} KB, GitHub Pages entry point)")
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ import sys
 from playwright.sync_api import sync_playwright
 
 REPO = pathlib.Path(__file__).resolve().parent.parent
-GUIDE = REPO / "start-here.html"
+GUIDE = REPO / "index.html"
 OUT = pathlib.Path(__file__).resolve().parent / "screenshots"
 OUT.mkdir(exist_ok=True)
 
