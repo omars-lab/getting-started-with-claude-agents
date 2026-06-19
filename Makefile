@@ -19,14 +19,15 @@ REL_TAG   := latest
 REL_ASSET := $(NAME).zip
 REPO_SLUG := omars-lab/$(NAME)
 
-.PHONY: help build publish zip release
+.PHONY: help build publish zip release ship _push _upload
 
 help:
 	@echo "Targets:"
 	@echo "  make build    Regenerate the guide (start-here.html + index.html) and assets"
 	@echo "  make publish  Build, commit, and push — updates the live GitHub Pages site"
-	@echo "  make zip      Create ~/Desktop/$(NAME)-<timestamp>.zip for sharing"
 	@echo "  make release  Build a fresh zip and upload it to the GitHub 'latest' release"
+	@echo "  make ship     Build once, then release AND publish (one command, full deploy)"
+	@echo "  make zip      Create ~/Desktop/$(NAME)-<timestamp>.zip for sharing"
 
 # Regenerate every asset, then assemble the guide. Mirrors the onboarding-guide skill.
 build:
@@ -36,15 +37,18 @@ build:
 	@$(PY) $(SKILL)/make_claude_splash.py
 	@$(PY) $(SKILL)/build_html.py
 
-# Build, then commit any changes and push. Pushing to main triggers the
-# GitHub Pages rebuild automatically (the gitleaks pre-commit hook runs first).
-# No-ops cleanly if there's nothing to commit.
-publish: build
+# Commit any changes and push. Pushing to main triggers the GitHub Pages
+# rebuild automatically (the gitleaks pre-commit hook runs first). No-ops
+# cleanly if there's nothing to commit.
+_push:
 	@git add -A
 	@git diff --cached --quiet && echo "Nothing to publish — already up to date." || \
 		git commit -m "Update onboarding guide ($(STAMP))"
 	@git push origin main
 	@echo "Pushed. GitHub Pages will rebuild from main shortly."
+
+# Build, then commit and push (updates the live GitHub Pages site).
+publish: build _push
 
 # Zip the current directory onto the Desktop, omitting repo tooling.
 # agent-outputs/ ships present-but-empty: all generated data is excluded, only
@@ -69,7 +73,7 @@ zip:
 # Build a fixed-name zip and upload it to the GitHub 'latest' release, so the
 # guide can link to a stable URL: releases/latest/download/$(REL_ASSET).
 # Creates the release on first run; replaces the asset on subsequent runs.
-release: build
+_upload:
 	@TMP="$$(mktemp -d)"; OUT="$$TMP/$(REL_ASSET)"; \
 	cd "$(CURDIR)" && zip -r -q "$$OUT" . \
 		-x '*/.venv/*' '.venv/*' -x '*/.git/*' '.git/*' \
@@ -84,3 +88,10 @@ release: build
 	gh release upload $(REL_TAG) "$$OUT" -R $(REPO_SLUG) --clobber && \
 	echo "Uploaded $(REL_ASSET) → https://github.com/$(REPO_SLUG)/releases/latest/download/$(REL_ASSET)"; \
 	rm -rf "$$TMP"
+
+release: build _upload
+
+# Full deploy in one command: build once, upload the release zip, then commit
+# and push (which rebuilds GitHub Pages). Order matters — upload the downloadable
+# zip before publishing the site that links to it.
+ship: build _upload _push
