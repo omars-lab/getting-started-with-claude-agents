@@ -15,12 +15,15 @@ self-contained HTML onboarding guide that explains it.
 
 ## Common tasks (use the Makefile)
 
-- **Rebuild the guide** after editing the agent, a skill, or the guide template:
-  `make build` — regenerates all assets (terminal GIF, Finder SVGs, splash, `/agents` panel)
-  and assembles `start-here.html` + `index.html`.
-- **Publish** (update the live GitHub Pages site): `make publish` — builds, commits, and
-  pushes to `main`. Pushing triggers the Pages rebuild automatically.
-- **Share a copy**: `make zip` — writes a timestamped zip to `~/Desktop`, omitting repo
+- **Deploy everything** (the default after any change): `make ship` — builds once, uploads
+  the downloadable release zip, then commits and pushes (which rebuilds GitHub Pages). Use
+  this unless you specifically want just one of the steps below.
+- **Rebuild the guide** locally only: `make build` — regenerates all assets (terminal GIF,
+  Finder SVGs, splash, `/agents` panel) and assembles `start-here.html` + `index.html`.
+- **Publish the site only**: `make publish` — build, commit, push (no release upload).
+- **Refresh the download only**: `make release` — build, upload the fixed-name zip to the
+  GitHub `latest` release.
+- **Share a local copy**: `make zip` — writes a timestamped zip to `~/Desktop`, omitting repo
   tooling (`.venv`, `.git`, `Makefile`, `CLAUDE.md`, `.gitignore`, `index.html`, etc.).
 
 ## Editing the guide
