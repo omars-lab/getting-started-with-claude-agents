@@ -65,7 +65,7 @@ The agent runs **pure Python** — no system dependencies (no LibreOffice, no Ex
 ./.venv/bin/python3 .claude/skills/ensure-deps/scripts/check.py
 ```
 
-If the venv itself is missing, the script can't run. In that case the skill detects this in its own first three lines (a tiny shim that uses system `python3` to check for `.venv`) and prints the bootstrap fix instead.
+If the venv itself is missing (e.g. a fresh download), run the script with **system Python** — `python3 .claude/skills/ensure-deps/scripts/check.py`. The script checks for `.venv/` first and returns a `not_ready` verdict whose fix is `python3 -m venv .venv`. Don't skip the check just because the venv is absent.
 
 The script returns JSON to stdout:
 
@@ -95,9 +95,13 @@ For these specific failures, ask the user **once** before running:
 | `./agent-outputs/` not writable | `mkdir -p ./agent-outputs` | Yes, with confirmation |
 | MCP server unreachable | varies | **No** — surface the issue, the user fixes credentials/config |
 
-Ask the user once, batched: *"I can run `python3 -m venv .venv && ./.venv/bin/pip install -r .claude/skills/ensure-deps/requirements.txt` for you — proceed?"* Don't ask separately for each step.
+Ask the user once, batched: *"I can run `python3 -m venv .venv && ./.venv/bin/python3 -m pip install -r .claude/skills/ensure-deps/requirements.txt` for you — proceed?"* Don't ask separately for each step.
 
-The dependency list lives at `.claude/skills/ensure-deps/requirements.txt` — this skill owns it. Adding a new Python dependency to the agent means editing that file *and* the package check list in `scripts/check.py`.
+**On a yes, actually run it** — create the venv and install from the requirements file, then re-run the check and proceed. Do not stop and hand the user the commands to paste, and do not present a multi-option menu; that's the failure mode this skill exists to prevent. Only fall back to "you run it yourself" if the user declines or the install errors.
+
+The dependency list lives at `.claude/skills/ensure-deps/requirements.txt` — this skill owns it, **it always exists in this folder**, and it is the only correct install source. Never substitute a hand-typed `pip install <packages>` list, and never report the file as missing. Adding a new Python dependency means editing that file *and* the package check list in `scripts/check.py`.
+
+**Bootstrapping when the venv is absent:** the venv won't exist on a fresh download, so `./.venv/bin/python3` isn't available yet. Run the check with system Python instead — `python3 .claude/skills/ensure-deps/scripts/check.py` — it detects the missing venv and returns `not_ready` with the venv-creation fix. Then follow Step 3.
 
 ### Step 4 — Block or proceed
 
@@ -119,6 +123,9 @@ The dependency list lives at `.claude/skills/ensure-deps/requirements.txt` — t
 - ❌ **Auto-installing system packages without asking.** `brew install --cask libreoffice` is a 600MB download and changes /Applications. Always ask.
 - ❌ **Running this check inside other skills.** It's the agent's responsibility to call this once at workflow step 0. Other skills assume it's already passed.
 - ❌ **Continuing after `not ready`.** Don't try to be helpful by proceeding anyway. The error mid-workflow will be worse.
+- ❌ **Halting and dumping commands instead of offering to run them.** On `not_ready` with auto-fixable failures, offer the one batched setup command and run it on a yes — don't make the user paste it, and don't present a 3-option menu.
+- ❌ **Improvising a `pip install <packages>` list or saying requirements.txt is missing.** It always exists at `.claude/skills/ensure-deps/requirements.txt`. Install from it.
+- ❌ **Skipping the check because the venv is gone.** Run it with system `python3`; it's built to report the missing venv.
 
 ## What this skill is not
 
