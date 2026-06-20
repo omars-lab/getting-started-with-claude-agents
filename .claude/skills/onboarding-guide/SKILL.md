@@ -5,13 +5,13 @@ description: Regenerate the self-contained start-here.html onboarding guide — 
 
 # onboarding-guide
 
-Builds `start-here.html` at the repo root: a single self-contained file a non-technical friend can double-click to learn what this agent is and how to use it. It is the companion to `explain-agent` — that one diagrams *how a run flows*; this one is the *first-contact walkthrough* (open it, reveal `.claude`, read the four things inside, watch one run).
+Builds `index.html` at the repo root: a single self-contained React app, served on GitHub Pages, that introduces a newcomer to the agent. It is the companion to `explain-agent` — that one diagrams *how a run flows*; this one is the *first-contact walkthrough* (open it, reveal `.claude`, read the four things inside, get started). The guide is web-only — it is not shipped in the downloadable example.
 
 ## Output contract
 
 After running, these exist:
 
-- **`./start-here.html`** — the guide, fully self-contained. Every image is inlined as a base64 data URI; it opens offline from anywhere with no external assets, no trackers, no CDN.
+- **`./index.html`** — the guide (a single-file React app), fully self-contained. Every image is inlined as a base64 data URI; it opens offline from anywhere with no external assets, no trackers, no CDN.
 - **`.claude/skills/onboarding-guide/assets/`** — the regenerated source assets:
   - `terminal.gif` — a *faithful* Claude Code session (cream UI, grey prompt bar, the `● I'll … launch the stock-analyzer agent` turn, the `stock-analyzer(…)` subagent block with indented `└` tool calls, the orange `✻ Stewing…` spinner, the `Opus 4.8 | 📁 <folder> | …` status line). Claude never says "agent is ready."
   - `finder-hidden.svg` — the folder as first seen, `.claude` hidden
@@ -22,7 +22,6 @@ After running, these exist:
   - `finder-skills.svg` — inside `.claude/skills/`, the skill folders with `xlsx-author` highlighted (Make it yours)
   - `claude-agents.svg` — the `/agents` Library panel proving `stock-analyzer` is a configured Project agent
   - `claude-splash.svg` — the Claude Code startup splash (mascot + version + empty input box, "waiting for input")
-- **`./View Guide.command`** — double-click launcher that opens `start-here.html` in the browser (create if missing).
 
 ## Workflow
 
@@ -34,19 +33,26 @@ Run all three steps from the repo root, using the project venv:
 ./.venv/bin/python3 .claude/skills/onboarding-guide/scripts/make_agents_svg.py      # → assets/claude-agents.svg
 ./.venv/bin/python3 .claude/skills/onboarding-guide/scripts/make_claude_splash.py   # → assets/claude-splash.svg
 ./.venv/bin/python3 .claude/skills/onboarding-guide/scripts/make_spotlight_svg.py   # → assets/spotlight.svg
-./.venv/bin/python3 .claude/skills/onboarding-guide/scripts/build_html.py           # → ./start-here.html
+./.venv/bin/python3 .claude/skills/onboarding-guide/scripts/build_html.py           # → ./index.html (web guide, GitHub Pages)
 ```
 
 1. **Render the terminal GIF** (`make_terminal_gif.py`). Uses Pillow to type out a real Claude Code session frame by frame, then `gifsicle -O3` to shrink it (~100 KB). Edit the `TRANSCRIPT` list to change what the session shows — keep it faithful to how Claude Code actually renders (see the asset note above).
 2. **Render the Finder mockups** (`make_finder_svgs.py`). Pure-Python SVG — no dependencies. Edit the `visible` / `shown` / `inside` lists to match the current folder contents.
 3. **Render the `/agents` panel** (`make_agents_svg.py`). Pure-Python SVG of the `/agents` Library view. Update the path/agent name if the agent is renamed or moved.
-4. **Assemble the HTML** (`build_html.py`). Reads `templates/start-here.html.tmpl`, inlines each asset as a data URI, writes `./start-here.html`. Fails loudly if any `__TOKEN__` is left unreplaced.
+4. **Assemble the HTML** (`build_html.py`). Reads `templates/start-here.react.tmpl`, inlines each asset as a data URI, writes `./index.html`. Fails loudly if any `__TOKEN__` is left unreplaced.
 
-Then tell the user the file is ready and they can double-click `View Guide.command` (or `start-here.html` itself).
+Then tell the user it's ready — `make publish`/`make ship` deploys `index.html` to GitHub Pages.
 
 ### Editing the guide's content
 
-The prose, layout, and styling live in `templates/start-here.html.tmpl`. Edit it directly, then re-run step 3 only. Keep the visual language consistent with `explain-agent`: cream `#FAF7F2` ground, ink `#2B2A28`, terracotta `#D97757` accent, teal `#4A9B8E`, monospace headers. No gradients, no glassmorphism — technical but warm.
+The guide is a **single-file React app** (React + [htm](https://github.com/developit/htm), no JSX compiler, no build step). The prose, layout, styling, and components all live in `templates/start-here.react.tmpl`:
+
+- The full CSS design system is in the `<style>` block — edit class styles there.
+- Reusable function components (`Hero`, `FieldNoteRow`, `Card`, `SkillCard`, `AnatomyTabs`, `FinderShot`, `Steps`, `DeployPaths`, `Egress`, …) are defined in the `<script>` app block and composed in `App()`. Interactivity (tabs, chips, the cycling card) is React state.
+- Write markup with htm: `html\`<div class=${x}>...</div>\``. Use `class=` (not `className`). For fragments use `<${Fragment}>...<//>` — **htm has no `<>` shorthand**. Put HTML entities as real characters or `${"..."}` expressions, never `&nbsp;`/`&lt;` (htm renders them literally).
+- The runtime (`vendor/react.production.min.js`, `react-dom...`, `htm.umd.js`) is inlined at build time via the `__REACT_JS__` / `__REACTDOM_JS__` / `__HTM_JS__` tokens — fully offline, no CDN.
+
+Keep the visual language consistent with `explain-agent`: cream `#FAF7F2` ground, ink `#2B2A28`, terracotta `#D97757` accent, teal `#4A9B8E`, monospace headers. No gradients, no glassmorphism — technical but warm.
 
 ## Dependencies
 
@@ -73,7 +79,7 @@ This skill does **not** walk the filesystem dynamically (unlike `explain-agent`)
 
 ## Common mistakes to avoid
 
-- **Editing `start-here.html` directly.** It's generated — your edits vanish on the next build. Edit the template or the scripts.
+- **Editing `index.html` directly.** It's generated — your edits vanish on the next build. Edit `start-here.react.tmpl` or the scripts.
 - **Forgetting to re-run `build_html.py`** after changing an asset script. The HTML embeds a *copy* of the asset, not a link.
 - **Leaving `gifsicle` out and shipping a 400 KB GIF.** Install it, or accept the larger file knowingly.
 - **Letting the skill chips / Finder mockups drift** from the real folder contents after you add a skill.
