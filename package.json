@@ -1,0 +1,21 @@
+{
+  "name": "getting-started-with-claude-agents-guide",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "The web guide for getting-started-with-claude-agents — a Vite + React app that consumes @omars-lab/blog-ui from GitHub Packages.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@omars-lab/blog-ui": "^0.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.0"
+  }
+}

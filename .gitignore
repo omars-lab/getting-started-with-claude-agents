@@ -20,3 +20,9 @@ tests/screenshots/
 
 # Build staging for the downloadable example
 dist/
+
+# Vite build output (copied to root for Pages by `make publish`)
+dist-site/
+
+# Node dependencies (Vite guide build)
+node_modules/
