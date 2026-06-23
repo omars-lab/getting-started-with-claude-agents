@@ -41,6 +41,11 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # The committed .npmrc references ${GITHUB_TOKEN} literally, and yarn env-substitutes .npmrc
+    # on EVERY invocation (yarn install AND yarn build) — so GITHUB_TOKEN must be present for the
+    # whole job, not just the install step, or `yarn build` fails the same way. Set it job-wide.
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -53,10 +58,6 @@ jobs:
       - name: Install (pulls @omars-lab/blog-ui from GitHub Packages)
         run: yarn install --frozen-lockfile
         env:
-          # The committed .npmrc references ${GITHUB_TOKEN} literally, and yarn env-substitutes
-          # .npmrc on every invocation — so the env MUST provide a var named GITHUB_TOKEN, not
-          # only setup-node's NODE_AUTH_TOKEN. Provide both (same value) so the .npmrc resolves.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build the guide
