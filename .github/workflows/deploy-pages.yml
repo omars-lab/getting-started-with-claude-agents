@@ -53,6 +53,10 @@ jobs:
       - name: Install (pulls @omars-lab/blog-ui from GitHub Packages)
         run: yarn install --frozen-lockfile
         env:
+          # The committed .npmrc references ${GITHUB_TOKEN} literally, and yarn env-substitutes
+          # .npmrc on every invocation — so the env MUST provide a var named GITHUB_TOKEN, not
+          # only setup-node's NODE_AUTH_TOKEN. Provide both (same value) so the .npmrc resolves.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build the guide
