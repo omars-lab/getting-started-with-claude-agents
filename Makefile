@@ -21,16 +21,16 @@ REPO_SLUG := omars-lab/$(NAME)
 
 DIST := dist/$(NAME)
 
-.PHONY: help setup build dist publish zip release ship shots clean _push _upload
+.PHONY: help setup build validate-config deploy dist zip release shots clean _upload
 
 help:
 	@echo "Targets:"
 	@echo "  make setup    Install dev tooling (Pillow, Playwright + Chromium) into the venv"
-	@echo "  make build    Build the web guide (Vite+React app in web/) → index.html + assets/"
+	@echo "  make build    Build the web guide (Vite+React app in web/) → dist-site/ (local preview)"
+	@echo "  make validate-config  Static-check the Actions workflows (actionlint) — config dry-run"
+	@echo "  make deploy   Deploy the guide to GitHub Pages by triggering the Actions workflow"
 	@echo "  make dist     Stage the downloadable example in dist/ (clean copy of example/)"
-	@echo "  make publish  Build, commit, and push — updates the live GitHub Pages site"
 	@echo "  make release  Build a fresh zip and upload it to the GitHub 'latest' release"
-	@echo "  make ship     Build once, then release AND publish (one command, full deploy)"
 	@echo "  make shots    Screenshot the guide at desktop + mobile widths (tests/screenshots/)"
 	@echo "  make zip      Create ~/Desktop/$(NAME)-<timestamp>.zip for sharing"
 	@echo "  make clean    Remove dist/ and local zips"
@@ -51,30 +51,46 @@ setup:
 # @omars-lab/blog-ui component package from GitHub Packages, so installing needs a GitHub
 # token with read:packages in the env:
 #     export GITHUB_TOKEN=$(gh auth token)   # or a PAT with read:packages
-# Vite builds to dist-site/; we copy index.html + assets/ to the repo ROOT, where GitHub
-# Pages serves from (main/root, legacy build). The downloadable example (`make dist`) is
-# unaffected — it packages example/, never the guide.
+# Builds to dist-site/ for LOCAL PREVIEW only (yarn preview). The published site is built
+# in CI by the deploy-pages workflow — nothing is copied to the repo root anymore. The
+# downloadable example (`make dist`) is unaffected — it packages example/, never the guide.
 build:
 	@command -v node >/dev/null || { echo "node is required to build the guide (https://nodejs.org)"; exit 1; }
 	@[ -n "$$GITHUB_TOKEN" ] || { echo "GITHUB_TOKEN not set — needed to install @omars-lab/blog-ui from GitHub Packages."; echo "  run: export GITHUB_TOKEN=\$$(gh auth token)"; exit 1; }
 	@yarn install --frozen-lockfile
 	@yarn build
-	@cp dist-site/index.html index.html
-	@rm -rf assets && cp -R dist-site/assets assets
-	@echo "Guide built → index.html + assets/ (Vite, consuming @omars-lab/blog-ui)."
+	@echo "Guide built → dist-site/ (local preview: yarn preview). Deploy with: make deploy"
 
-# Commit any changes and push. Pushing to main triggers the GitHub Pages
-# rebuild automatically (the gitleaks pre-commit hook runs first). No-ops
-# cleanly if there's nothing to commit.
-_push:
-	@git add -A
-	@git diff --cached --quiet && echo "Nothing to publish — already up to date." || \
-		git commit -m "Update onboarding guide ($(STAMP))"
-	@git push origin main
-	@echo "Pushed. GitHub Pages will rebuild from main shortly."
+# Statically validate the workflow config BEFORE it runs in CI (a config dry-run).
+# actionlint deeply type-checks the Actions schema, action inputs, and ${{ }} expressions —
+# far more than a YAML parse. Auto-installs via brew or the official script if missing; falls
+# back to a plain YAML parse so the target never hard-fails on a missing tool.
+validate-config:
+	@if command -v actionlint >/dev/null 2>&1; then \
+		echo "actionlint: linting .github/workflows/…"; \
+		actionlint; \
+	elif command -v brew >/dev/null 2>&1; then \
+		echo "Installing actionlint via brew…"; brew install actionlint && actionlint; \
+	else \
+		echo "actionlint not found and no brew; falling back to YAML parse."; \
+		for f in .github/workflows/*.yml; do \
+			python3 -c "import sys,yaml; yaml.safe_load(open('$$f')); print('  ok:', '$$f')" || exit 1; \
+		done; \
+		echo "Install actionlint for full validation: brew install actionlint"; \
+	fi
 
-# Build, then commit and push (updates the live GitHub Pages site).
-publish: build _push
+# Deploy the guide to GitHub Pages by triggering the Actions workflow (deploy-pages.yml),
+# which builds from web/src in CI and publishes the artifact. This is the manual kick of the
+# same pipeline that runs automatically on push to main. Pages source is "GitHub Actions",
+# so there is no commit-to-branch step — CI is the single source of truth for the live site.
+# Validates the workflow config first (fail-closed: don't trigger a run on a broken config).
+deploy: validate-config
+	@command -v gh >/dev/null || { echo "gh CLI required: https://cli.github.com"; exit 1; }
+	@echo "Triggering the Pages deploy workflow on main…"
+	@gh workflow run deploy-pages.yml --ref main
+	@sleep 4
+	@gh run list --workflow=deploy-pages.yml --limit 1 || true
+	@echo "Watch it: gh run watch \$$(gh run list --workflow=deploy-pages.yml --limit 1 --json databaseId -q '.[0].databaseId')"
 
 # Stage the exact folder a user downloads into dist/$(NAME).
 # The example/ directory IS the shippable folder (real dotted .claude/), so this
@@ -110,12 +126,9 @@ _upload: dist
 	echo "Uploaded $(REL_ASSET) → https://github.com/$(REPO_SLUG)/releases/latest/download/$(REL_ASSET)"; \
 	rm -rf "$$TMP"
 
-release: build _upload
-
-# Full deploy in one command: build once, upload the release zip, then commit
-# and push (which rebuilds GitHub Pages). Order matters — upload the downloadable
-# zip before publishing the site that links to it.
-ship: build _upload _push
+# Upload the downloadable-example zip to the GitHub 'latest' release. Independent of the
+# web guide (which deploys via `make deploy` / the Actions workflow).
+release: _upload
 
 clean:
 	@rm -rf dist

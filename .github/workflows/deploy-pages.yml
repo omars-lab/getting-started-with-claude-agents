@@ -1,0 +1,75 @@
+# Build the Vite guide and deploy it to GitHub Pages — FROM SOURCE, in CI.
+#
+# This replaces the legacy "serve the committed index.html/assets from main/root" model.
+# The guide is a Vite + React app (web/) that consumes @omars-lab/blog-ui from GitHub
+# Packages; building in CI means the published site is always rebuilt from web/src, so the
+# committed build output can't drift from the source.
+#
+# Auth: @omars-lab/blog-ui is a public, same-owner (omars-lab) GitHub Packages package, so the
+# default Actions GITHUB_TOKEN with `packages: read` can install it (no PAT secret needed) —
+# wired via setup-node's registry-url/scope + NODE_AUTH_TOKEN.
+#
+# A manual fallback (`make deploy`, which builds + commits + pushes) still exists for deploying
+# by hand without Actions — see the Makefile.
+name: Deploy guide to Pages
+
+on:
+  push:
+    branches: [main]
+    # only rebuild when the guide source or its build config changes
+    paths:
+      - 'web/**'
+      - 'vite.config.js'
+      - 'package.json'
+      - 'yarn.lock'
+      - '.npmrc'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch: {} # allow a manual run from the Actions tab
+
+# Pages deploy permissions + the package read needed to install @omars-lab/blog-ui.
+permissions:
+  contents: read
+  packages: read
+  pages: write
+  id-token: write
+
+# One in-flight Pages deploy at a time; don't cancel a running publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: '@omars-lab'
+
+      - name: Install (pulls @omars-lab/blog-ui from GitHub Packages)
+        run: yarn install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build the guide
+        run: yarn build # → dist-site/ (vite.config outDir)
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist-site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
