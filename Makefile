@@ -26,7 +26,7 @@ DIST := dist/$(NAME)
 help:
 	@echo "Targets:"
 	@echo "  make setup    Install dev tooling (Pillow, Playwright + Chromium) into the venv"
-	@echo "  make build    Regenerate the web guide (index.html) and assets"
+	@echo "  make build    Build the web guide (Vite+React app in web/) → index.html + assets/"
 	@echo "  make dist     Stage the downloadable example in dist/ (clean copy of example/)"
 	@echo "  make publish  Build, commit, and push — updates the live GitHub Pages site"
 	@echo "  make release  Build a fresh zip and upload it to the GitHub 'latest' release"
@@ -47,14 +47,21 @@ setup:
 	@$(PY) -m playwright install chromium
 	@echo "Dev tooling ready (Pillow, Playwright + Chromium)."
 
-# Regenerate every asset, then assemble the guide. Mirrors the onboarding-guide skill.
+# Build the web guide. It is a Vite + React app (source under web/) that consumes the
+# @omars-lab/blog-ui component package from GitHub Packages, so installing needs a GitHub
+# token with read:packages in the env:
+#     export GITHUB_TOKEN=$(gh auth token)   # or a PAT with read:packages
+# Vite builds to dist-site/; we copy index.html + assets/ to the repo ROOT, where GitHub
+# Pages serves from (main/root, legacy build). The downloadable example (`make dist`) is
+# unaffected — it packages example/, never the guide.
 build:
-	@$(PY) $(SKILL)/make_terminal_gif.py
-	@$(PY) $(SKILL)/make_finder_svgs.py
-	@$(PY) $(SKILL)/make_agents_svg.py
-	@$(PY) $(SKILL)/make_claude_splash.py
-	@$(PY) $(SKILL)/make_spotlight_svg.py
-	@$(PY) $(SKILL)/build_html.py
+	@command -v node >/dev/null || { echo "node is required to build the guide (https://nodejs.org)"; exit 1; }
+	@[ -n "$$GITHUB_TOKEN" ] || { echo "GITHUB_TOKEN not set — needed to install @omars-lab/blog-ui from GitHub Packages."; echo "  run: export GITHUB_TOKEN=\$$(gh auth token)"; exit 1; }
+	@yarn install --frozen-lockfile
+	@yarn build
+	@cp dist-site/index.html index.html
+	@rm -rf assets && cp -R dist-site/assets assets
+	@echo "Guide built → index.html + assets/ (Vite, consuming @omars-lab/blog-ui)."
 
 # Commit any changes and push. Pushing to main triggers the GitHub Pages
 # rebuild automatically (the gitleaks pre-commit hook runs first). No-ops
