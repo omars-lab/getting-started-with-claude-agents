@@ -1,0 +1,23 @@
+# Server-side secret scan. The repo already runs gitleaks LOCALLY via the pre-commit
+# framework (.pre-commit-config.yaml), but that only protects contributors who ran
+# `pre-commit install`. This workflow runs gitleaks in CI on every push/PR so a secret can't
+# reach the public repo from an un-hooked clone — fail-closed, secure-by-default. Uses the
+# gitleaks default ruleset (the repo has no custom .gitleaks.toml).
+name: gitleaks
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history so gitleaks scans all commits, not just the tip
+
+      - name: gitleaks (full history + working tree)
+        uses: gitleaks/gitleaks-action@v2
+        # GITLEAKS_LICENSE is only needed for org-account scanning; this is a user repo.
