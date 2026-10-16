@@ -21,3 +21,7 @@ jobs:
       - name: gitleaks (full history + working tree)
         uses: gitleaks/gitleaks-action@v2
         # GITLEAKS_LICENSE is only needed for org-account scanning; this is a user repo.
+        # GITHUB_TOKEN is required to scan pull requests (the action reads the PR's commits);
+        # without it every pull_request run fails before scanning.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
