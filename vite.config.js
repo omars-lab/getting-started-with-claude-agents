@@ -15,6 +15,14 @@ export default defineConfig({
   base: './',
   root: 'web',
   plugins: [react()],
+  // `make hub` / `yarn dev`: the port the local hubs launcher's port plan gives this guide
+  // (~/Workspace/git/hubs). strictPort fails loudly instead of sliding to the next port,
+  // and 127.0.0.1 keeps it off the network.
+  server: {
+    port: 7126,
+    strictPort: true,
+    host: '127.0.0.1',
+  },
   build: {
     outDir: '../dist-site',
     emptyOutDir: true,
