@@ -1,0 +1,21 @@
+# How this repo shows on the local launcher (~/Workspace/git/hubs).
+# Check it with `uv run ~/Workspace/git/hubs/launcher/check.py --repo .`
+
+runners:
+  - id: getting-started
+    port: 7126                    # the port plan's; set in vite.config.js (strictPort, 127.0.0.1)
+    health: /
+    start: make hub               # Vite dev server; needs `make build` once for the packages
+
+hubs:
+  - id: getting-started
+    name: Getting started with Claude agents
+    description: A step-by-step guide to building a first Claude agent, with a downloadable example.
+    visibility: public
+    use: published
+    fallback: local
+    local: { runner: getting-started }
+    published:
+      url: https://blog.bytesofpurpose.com/getting-started-with-claude-agents/
+      host: github-pages
+      deploy: make deploy         # runs the deploy-pages workflow on main

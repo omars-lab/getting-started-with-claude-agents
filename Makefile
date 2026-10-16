@@ -21,12 +21,13 @@ REPO_SLUG := omars-lab/$(NAME)
 
 DIST := dist/$(NAME)
 
-.PHONY: help setup build validate-config deploy dist zip release shots clean _upload
+.PHONY: help setup build hub validate-config deploy dist zip release shots clean _upload
 
 help:
 	@echo "Targets:"
 	@echo "  make setup    Install dev tooling (Pillow, Playwright + Chromium) into the venv"
 	@echo "  make build    Build the web guide (Vite+React app in web/) → dist-site/ (local preview)"
+	@echo "  make hub      Serve the guide live at http://localhost:7126/ (the local hubs launcher starts this)"
 	@echo "  make validate-config  Static-check the Actions workflows (actionlint) — config dry-run"
 	@echo "  make deploy   Deploy the guide to GitHub Pages by triggering the Actions workflow"
 	@echo "  make dist     Stage the downloadable example in dist/ (clean copy of example/)"
@@ -60,6 +61,15 @@ build:
 	@yarn install --frozen-lockfile
 	@yarn build
 	@echo "Guide built → dist-site/ (local preview: yarn preview). Deploy with: make deploy"
+
+# Serve the guide live, with reload on edit, at http://localhost:7126/ (port and host are in
+# vite.config.js). The local hubs launcher (~/Workspace/git/hubs) starts and stops this via
+# hub.yaml. The packages come from `make build`, which needs the GitHub token; run it once first.
+# Vite is run directly, not through `yarn dev`: yarn reads .npmrc and refuses to start without
+# GITHUB_TOKEN, which serving the guide doesn't need.
+hub:
+	@[ -x node_modules/.bin/vite ] || { echo "Packages not installed. Run make build once first (it needs GITHUB_TOKEN)."; exit 1; }
+	@node_modules/.bin/vite
 
 # Statically validate the workflow config BEFORE it runs in CI (a config dry-run).
 # actionlint deeply type-checks the Actions schema, action inputs, and ${{ }} expressions —
