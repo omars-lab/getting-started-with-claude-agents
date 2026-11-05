@@ -1,11 +1,12 @@
 // The "Getting Started with Claude Agents" web guide, as a Vite + React app.
 //
-// Ported from the prior htm single-file template. The interactive demo (the Walkthrough +
-// Mockup in the "Getting started" section) is rendered by @omars-lab/blog-ui, installed from
-// GitHub Packages, so this page doubles as a live, cross-repo proof that the package is
-// consumable by a real bundler.
+// Ported from the prior htm single-file template. A <Mockup> from @omars-lab/blog-ui
+// (installed from GitHub Packages) is rendered in the "Getting started" section, so this
+// page doubles as a live, cross-repo proof that the package is consumable by a real bundler.
+// (The reader-facing "agent in motion" beat is the terminal GIF below it; the scripted
+// Walkthrough was removed as redundant.)
 import {useState, useEffect, Fragment} from 'react';
-import {Mockup, Walkthrough} from '@omars-lab/blog-ui';
+import {Mockup} from '@omars-lab/blog-ui';
 import '@omars-lab/blog-ui/style.css';
 import './guide.css';
 
@@ -381,46 +382,28 @@ function Steps({children}) {
   return <ol className="steps">{children}</ol>;
 }
 
-// ---- AgentWalkthrough: the live blog-ui demo woven into the guide.
-// Renders @omars-lab/blog-ui's <Walkthrough> + <Mockup>: Claude opens the agent for review,
-// you eyeball the shortlist in the browser, Claude continues on your approval. This is the
-// "show the UX in motion" beat AND the cross-repo package proof, in one.
-function AgentWalkthrough() {
+// ---- ShortlistMockup: a static <Mockup> from @omars-lab/blog-ui showing the checkpoint the
+// agent pauses on. The reader-facing "agent in motion" beat is the terminal GIF below it; the
+// scripted <Walkthrough> was removed as redundant. This frame stays for the picture of the
+// checkpoint AND as the cross-repo proof that the package installs + renders in a real second
+// repo (the point of the "shipping a component package" writeup).
+function ShortlistMockup() {
   return (
     <figure style={{margin: '22px 0 4px'}}>
-      <Walkthrough
-        steps={[
-          {type: 'scene', to: 'claude', say: 'You ask the agent for today’s ideas',
-            prompt: 'what stocks are worth considering today?',
-            tools: [{verb: 'Task', target: 'stock-analyzer', note: 'launch the subagent'},
-                    {verb: 'Skill', target: 'ticker-discovery', note: 'sweep catalysts'}]},
-          {type: 'scene', to: 'app', say: 'It pauses at a shortlist for your approval'},
-          {type: 'highlight', target: '#wt-shortlist', say: 'the proposed names'},
-          {type: 'click', target: '#wt-approve', say: 'you approve the expensive work'},
-          {type: 'scene', to: 'claude', say: 'It fans out: data, analysis, a workbook',
-            prompt: 'continue',
-            intro: 'Approved. Running full analysis on the shortlist now.',
-            tools: [{verb: 'Skill', target: 'ticker-data', note: 'fetch + cache'},
-                    {verb: 'Skill', target: 'growth-study', note: 'build the workbook'},
-                    {verb: 'Write', target: 'agent-outputs/report.md'},
-                    {target: 'report ready', done: true}]},
-        ]}
-      >
-        <Mockup chrome="terminal" title="stock-analyzer" url="">
-          <p style={{margin: '0 0 10px'}}>Catalyst sweep found these worth a closer look today:</p>
-          <ul id="wt-shortlist" style={{margin: '0 0 14px', paddingLeft: '20px', lineHeight: 1.8}}>
-            <li>NVDA: unusual options volume + analyst upgrade</li>
-            <li>CRWD: earnings tomorrow, elevated IV</li>
-            <li>SMCI: 8-K filed, insider Form 4 buys</li>
-          </ul>
-          <button id="wt-approve" style={{font: 'inherit', padding: '8px 16px', borderRadius: '8px',
-            border: 'none', background: '#D97757', color: '#fff', cursor: 'pointer'}}>
-            Approve &amp; run full analysis
-          </button>
-        </Mockup>
-      </Walkthrough>
-      <figcaption><b>The agent in motion.</b> It proposes a shortlist and stops, analysis time
-        is the costly step, so it confirms before spending it. (Rendered live by the
+      <Mockup chrome="terminal" title="stock-analyzer" url="">
+        <p style={{margin: '0 0 10px'}}>Catalyst sweep found these worth a closer look today:</p>
+        <ul style={{margin: '0 0 14px', paddingLeft: '20px', lineHeight: 1.8}}>
+          <li>NVDA: unusual options volume + analyst upgrade</li>
+          <li>CRWD: earnings tomorrow, elevated IV</li>
+          <li>SMCI: 8-K filed, insider Form 4 buys</li>
+        </ul>
+        <button style={{font: 'inherit', padding: '8px 16px', borderRadius: '8px',
+          border: 'none', background: '#D97757', color: '#fff', cursor: 'pointer'}}>
+          Approve &amp; run full analysis
+        </button>
+      </Mockup>
+      <figcaption><b>The checkpoint.</b> It proposes a shortlist and stops, analysis time
+        is the costly step, so it confirms before spending it. (Rendered by the
         <code> @omars-lab/blog-ui</code> package.)</figcaption>
     </figure>
   );
@@ -486,7 +469,7 @@ function Run() {
               for catalysts, proposes a shortlist, and, importantly, <b>stops to let you
               approve</b> before doing the expensive work. Then it fans out: data,
               analysis, a workbook, and a stress test per name.</p>
-            <AgentWalkthrough />
+            <ShortlistMockup />
             <FinderShot
               figStyle={{margin: '14px 0 4px'}}
               imgStyle={{background: '#FBF4E4'}}
